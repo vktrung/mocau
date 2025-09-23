@@ -58,7 +58,7 @@ jobs:
           docker run -d \
             --name go-container \
             --link mysql-container:mysql \
-            -e DB_CONN=app_user:app_password@tcp(mysql:3306)/base_project?charset=utf8mb4&parseTime=True&loc=Local \
+            -e "DB_CONN=app_user:app_password@tcp(mysql:3306)/base_project?charset=utf8mb4&parseTime=True&loc=Local" \
             -e SECRET=vktruzg \
             -e GIN_MODE=release \
             -e PORT=3000 \
