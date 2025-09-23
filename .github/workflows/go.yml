@@ -18,8 +18,17 @@ jobs:
         run: echo "PORT=${{ secrets.PORT }}" > .env
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
+      - name: Pull base images
+        run: |
+          docker pull golang:1.23-alpine || echo "Failed to pull golang:1.23-alpine"
+          docker pull alpine:latest || echo "Failed to pull alpine:latest"
       - name: Build docker image
-        run: docker build -t vktrung/go .
+        run: |
+          for i in {1..3}; do
+            timeout 600 docker build --network=default --build-arg HTTP_PROXY= --build-arg HTTPS_PROXY= -t vktrung/go . && break
+            echo "Attempt $i failed, retrying..."
+            sleep 15
+          done
       - name: Push image to docker hub
         run: docker push vktrung/go:latest
   deploy:
