@@ -50,6 +50,22 @@ go mod tidy
 go run main.go
 ```
 
+#### Lệnh Docker Compose hữu ích
+
+```bash
+# Build images
+docker compose build
+
+# Build và chạy nền
+docker compose up -d --build
+
+# Rebuild chỉ service app
+docker compose build app && docker compose up -d app
+
+# Xem logs của app
+docker compose logs -f app
+```
+
 ### Cách 2: Cài đặt thủ công
 
 1. Cài đặt MySQL và tạo database
@@ -97,6 +113,27 @@ make test
 
 ### Upload
 - `PUT /v1/upload` - Upload file
+
+### Category (CRUD)
+- `POST /v1/categories` - Tạo category
+  - Body ví dụ:
+    ```json
+    {
+      "category_name": "Coffee Beans",
+      "description": "All kinds of beans",
+      "status": "active"
+    }
+    ```
+- `GET /v1/categories` - Danh sách category (paging `page`, `limit`)
+- `GET /v1/categories/:id` - Lấy chi tiết category
+- `PUT /v1/categories/:id` - Cập nhật category (partial)
+  - Body ví dụ:
+    ```json
+    {
+      "description": "Premium roasted beans"
+    }
+    ```
+- `DELETE /v1/categories/:id` - Deactive category (soft delete, đặt `status = "deactive"`)
 
 ### Utility
 - `GET /ping` - Health check
