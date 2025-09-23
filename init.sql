@@ -14,10 +14,8 @@ CREATE TABLE IF NOT EXISTS Users (
     phone VARCHAR(255),
     role ENUM('user', 'admin') DEFAULT 'user',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_users_email (email),
+    INDEX idx_users_username (username),
+    INDEX idx_users_role (role)
 );
-
--- Create index for better performance
-CREATE INDEX idx_users_email ON Users(email);
-CREATE INDEX idx_users_username ON Users(username);
-CREATE INDEX idx_users_role ON Users(role);
