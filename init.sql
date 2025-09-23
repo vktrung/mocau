@@ -19,3 +19,14 @@ CREATE TABLE IF NOT EXISTS Users (
     INDEX idx_users_username (username),
     INDEX idx_users_role (role)
 );
+
+-- Create categories table
+CREATE TABLE IF NOT EXISTS Categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    category_name VARCHAR(255) NOT NULL,
+    description TEXT,
+    status VARCHAR(50) DEFAULT 'active',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY uq_categories_name (category_name)
+);

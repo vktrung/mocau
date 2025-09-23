@@ -6,7 +6,9 @@ import (
 	"mocau-backend/docs"
 	"mocau-backend/middleware"
 	"mocau-backend/module/upload"
-	"mocau-backend/module/user/model"
+	catModel "mocau-backend/module/category/model"
+	catGin "mocau-backend/module/category/transport/ginCategory"
+	userModel "mocau-backend/module/user/model"
 	"mocau-backend/module/user/storage"
 	"mocau-backend/module/user/transport/ginUser"
 	"net/http"
@@ -58,9 +60,10 @@ func main() {
 	log.Println("Connected to database", db)
 
 	// Auto migrate database tables
-	err = db.AutoMigrate(
-		&model.User{},
-	)
+    err = db.AutoMigrate(
+        &userModel.User{},
+        &catModel.Category{},
+    )
 	if err != nil {
 		log.Fatalln("Failed to migrate database:", err)
 	}
@@ -93,13 +96,20 @@ func main() {
 	// Swagger documentation
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-	v1 := r.Group("/v1")
+    v1 := r.Group("/v1")
 	{
 		v1.PUT("/upload", upload.Upload(db))
 
 		v1.POST("/register", ginUser.Register(db))
 		v1.POST("/login", ginUser.Login(db, tokenProvider))
 		v1.GET("/profile", middleware.RequiredAuth(authStore, tokenProvider), ginUser.Profile())
+
+        // Category routes
+        v1.POST("/categories", catGin.CreateCategory(db))
+        v1.GET("/categories", catGin.ListCategories(db))
+        v1.GET("/categories/:id", catGin.GetCategory(db))
+        v1.PUT("/categories/:id", catGin.UpdateCategory(db))
+        v1.DELETE("/categories/:id", catGin.DeleteCategory(db))
 
 		// TODO: Add your custom routes here
 		// Example:
