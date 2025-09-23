@@ -37,7 +37,30 @@ jobs:
     steps:
       - name: Pull docker image
         run: docker pull vktrung/go:latest
-      - name: Delete old container
-        run: docker rm -f go-container
-      - name: Run docker container
-        run: docker run -d -p 4040:4040 --name go-container vktrung/go
+      - name: Delete old containers
+        run: |
+          docker rm -f go-container || true
+          docker rm -f mysql-container || true
+      - name: Start MySQL database
+        run: |
+          docker run -d \
+            --name mysql-container \
+            -e MYSQL_ROOT_PASSWORD=rootpassword \
+            -e MYSQL_DATABASE=base_project \
+            -e MYSQL_USER=app_user \
+            -e MYSQL_PASSWORD=app_password \
+            -p 3306:3306 \
+            mysql:8.0
+      - name: Wait for MySQL
+        run: sleep 30
+      - name: Run application container
+        run: |
+          docker run -d \
+            --name go-container \
+            --link mysql-container:mysql \
+            -e DB_CONN=app_user:app_password@tcp(mysql:3306)/base_project?charset=utf8mb4&parseTime=True&loc=Local \
+            -e SECRET=vktruzg \
+            -e GIN_MODE=release \
+            -e PORT=3000 \
+            -p 4040:3000 \
+            vktrung/go
