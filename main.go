@@ -44,7 +44,7 @@ func main() {
 	docs.SwaggerInfo.Title = "Mocau Backend API"
 	docs.SwaggerInfo.Description = "API documentation for Mocau Backend"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "localhost:3000"
+	docs.SwaggerInfo.Host = "3.37.88.135:4040"
 	docs.SwaggerInfo.BasePath = "/v1"
 
 	dsn := os.Getenv("DB_CONN")
@@ -73,6 +73,20 @@ func main() {
 
 	r := gin.Default()
 	r.Use(middleware.Recover())
+	
+	// Add CORS middleware
+	r.Use(func(c *gin.Context) {
+		c.Header("Access-Control-Allow-Origin", "*")
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		
+		if c.Request.Method == "OPTIONS" {
+			c.AbortWithStatus(204)
+			return
+		}
+		
+		c.Next()
+	})
 
 	r.Static("/static", "./static")
 
