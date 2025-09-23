@@ -15,9 +15,9 @@ const (
 
 type Category struct {
 	common.SQLModel
-	CategoryName string `json:"category_name" gorm:"column:category_name;"`
-	Description  string `json:"description" gorm:"column:description"`
-	Status       string `json:"status" gorm:"column:status;"`
+    CategoryName string `json:"category_name" gorm:"column:category_name;size:255;uniqueIndex"`
+    Description  string `json:"description" gorm:"column:description;type:text"`
+    Status       string `json:"status" gorm:"column:status;size:50"`
 }
 
 func (Category) TableName() string { return "Categories" }
