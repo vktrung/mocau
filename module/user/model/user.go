@@ -59,12 +59,12 @@ func (role *UserRole) MarshalJSON() ([]byte, error) {
 
 type User struct {
 	common.SQLModel
-	Username  string   `json:"username" gorm:"column:username;"`
+	Username  string   `json:"username" gorm:"column:username;size:50;uniqueIndex"`
 	Password  string   `json:"-" gorm:"column:password;"`
-	Email     string   `json:"email" gorm:"column:email;"`
+	Email     string   `json:"email" gorm:"column:email;size:100;uniqueIndex"`
 	FullName  string   `json:"full_name" gorm:"column:full_name;"`
 	Phone     string   `json:"phone" gorm:"column:phone;"`
-	Role      UserRole `json:"role" gorm:"column:role;"`
+	Role      UserRole `json:"role" gorm:"column:role;size:20;"`
 }
 
 func (u *User) GetUserId() int {

@@ -34,7 +34,8 @@ WORKDIR /root/
 # Copy the binary from builder stage
 COPY --from=builder /app/main .
 
-# Copy static files if any
+# Create static directory and copy files if they exist
+RUN mkdir -p ./static
 COPY --from=builder /app/static ./static
 
 # Copy docs if any
