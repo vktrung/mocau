@@ -19,16 +19,16 @@ jobs:
       - name: Login to Docker Hub
         run: docker login -u ${{ secrets.DOCKER_USERNAME }} -p ${{ secrets.DOCKER_PASSWORD }}
       - name: Build docker image
-        run: docker build -t integrationninjas/go .
+        run: docker build -t vktrung/go .
       - name: Push image to docker hub
-        run: docker push integrationninjas/go:latest
+        run: docker push vktrung/go:latest
   deploy:
     needs: build
     runs-on: self-hosted
     steps:
       - name: Pull docker image
-        run: docker pull integrationninjas/go:latest
+        run: docker pull vktrung/go:latest
       - name: Delete old container
         run: docker rm -f go-container
       - name: Run docker container
-        run: docker run -d -p 4040:4040 --name go-container integrationninjas/go
+        run: docker run -d -p 4040:4040 --name go-container vktrung/go
