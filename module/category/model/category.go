@@ -23,7 +23,6 @@ type Category struct {
 func (Category) TableName() string { return "Categories" }
 
 type CategoryCreate struct {
-    common.SQLModel `json:",inline"`
     CategoryName    string `json:"category_name" gorm:"column:category_name;"`
     Description     string `json:"description" gorm:"column:description"`
     Status          string `json:"status" gorm:"column:status;"`

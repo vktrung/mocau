@@ -6,7 +6,7 @@ import (
     "mocau-backend/module/category/model"
 )
 
-func (s *sqlStore) ListCategory(ctx context.Context, filter map[string]interface{}, paging *common.Paging) ([]model.Category, error) {
+func (s *sqlStore) ListCategory(ctx context.Context, filter map[string]interface{}) ([]model.Category, error) {
     db := s.db.Table(model.Category{}.TableName())
 
     var result []model.Category
@@ -15,16 +15,7 @@ func (s *sqlStore) ListCategory(ctx context.Context, filter map[string]interface
         filter["status"] = "active"
     }
 
-    if err := db.Where(filter).Count(&paging.Total).Error; err != nil {
-        return nil, common.ErrDB(err)
-    }
-
-    paging.Process()
-
-    if err := db.Where(filter).
-        Offset((paging.Page - 1) * paging.Limit).
-        Limit(paging.Limit).
-        Find(&result).Error; err != nil {
+    if err := db.Where(filter).Find(&result).Error; err != nil {
         return nil, common.ErrDB(err)
     }
 

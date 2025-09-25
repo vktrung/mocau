@@ -136,6 +136,8 @@ definitions:
         type: string
       password:
         type: string
+      username:
+        type: string
     type: object
   model.UserRole:
     enum:
@@ -161,17 +163,7 @@ info:
 paths:
   /categories:
     get:
-      description: Returns active categories by default. You can include `status`
-        filter in future if needed.
-      parameters:
-      - description: Page number (default 1)
-        in: query
-        name: page
-        type: integer
-      - description: Page size (min 5, max 100)
-        in: query
-        name: limit
-        type: integer
+      description: Returns all active categories by default.
       produces:
       - application/json
       responses:
@@ -183,7 +175,7 @@ paths:
           description: Internal error
           schema:
             $ref: '#/definitions/common.AppError'
-      summary: List categories with paging
+      summary: List all categories
       tags:
       - categories
     post:

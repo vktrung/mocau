@@ -26,28 +26,14 @@ const docTemplate = `{
     "paths": {
         "/categories": {
             "get": {
-                "description": "Returns active categories by default. You can include ` + "`" + `status` + "`" + ` filter in future if needed.",
+                "description": "Returns all active categories by default.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "categories"
                 ],
-                "summary": "List categories with paging",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Page number (default 1)",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "description": "Page size (min 5, max 100)",
-                        "name": "limit",
-                        "in": "query"
-                    }
-                ],
+                "summary": "List all categories",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -801,6 +787,9 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
+                    "type": "string"
+                },
+                "username": {
                     "type": "string"
                 }
             }
