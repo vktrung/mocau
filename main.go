@@ -15,6 +15,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	"github.com/swaggo/gin-swagger"
 	"gorm.io/driver/mysql"
@@ -42,6 +43,11 @@ import (
 // @description Type "Bearer" followed by a space and JWT token.
 
 func main() {
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found, using system environment variables")
+	}
+
 	// Initialize Swagger docs
 	docs.SwaggerInfo.Title = "Mocau Backend API"
 	docs.SwaggerInfo.Description = "API documentation for Mocau Backend"

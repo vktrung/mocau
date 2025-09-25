@@ -62,6 +62,17 @@ go run main.go
 - Đảm bảo MySQL cho phép kết nối từ container
 - Cấu hình `SWAGGER_HOST` trong `.env` với IP VPS của bạn
 
+**GitHub Secrets cần thêm:**
+- `DB_CONN`: Connection string MySQL
+- `SECRET`: JWT secret key
+- `SWAGGER_HOST`: Host cho Swagger docs
+- `MYSQL_ROOT_PASSWORD`: MySQL root password
+- `MYSQL_DATABASE`: Database name
+- `MYSQL_USER`: MySQL user
+- `MYSQL_PASSWORD`: MySQL user password
+- `DOCKER_USERNAME`: Docker Hub username
+- `DOCKER_PASSWORD`: Docker Hub password
+
 #### Lệnh Docker Compose hữu ích
 
 ```bash
