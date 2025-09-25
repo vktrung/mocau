@@ -56,10 +56,20 @@ func main() {
 
 	dsn := os.Getenv("DB_CONN")
 	systemSecret := os.Getenv("SECRET")
+	
+	// Debug: Check if environment variables are loaded
+	if dsn == "" {
+		log.Fatal("DB_CONN environment variable is not set. Please check your .env file or environment variables.")
+	}
+	if systemSecret == "" {
+		log.Fatal("SECRET environment variable is not set. Please check your .env file or environment variables.")
+	}
+	
+	log.Printf("Connecting to database with DSN: %s", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
 	if err != nil {
-		log.Fatalln(err)
+		log.Fatalln("Failed to connect to database:", err)
 	}
 
 	log.Println("Connected to database", db)
