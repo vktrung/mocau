@@ -23,8 +23,5 @@ func (s *sqlStore) FindUser(ctx context.Context, conditions map[string]interface
 		return nil, common.ErrDB(err)
 	}
 
-	// Mask the user ID for security
-	user.Mask(common.DbTypeUser)
-
 	return &user, nil
 }

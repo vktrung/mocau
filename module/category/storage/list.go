@@ -28,10 +28,6 @@ func (s *sqlStore) ListCategory(ctx context.Context, filter map[string]interface
         return nil, common.ErrDB(err)
     }
 
-    for i := range result {
-        result[i].Mask(common.DbTypeUser)
-    }
-
     return result, nil
 }
 

@@ -39,8 +39,7 @@ func Register(db *gorm.DB) func(*gin.Context) {
 			panic(err)
 		}
 
-		// Create a masked ID for response (GORM sets data.Id after Create)
-		data.Mask(common.DbTypeUser)
-		c.JSON(http.StatusOK, common.SimpleSuccessRes(data.FakeId))
+    		// Return raw ID after successful creation
+    		c.JSON(http.StatusOK, common.SimpleSuccessRes(data.Id))
 	}
 }

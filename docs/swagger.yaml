@@ -1,0 +1,506 @@
+basePath: /v1
+definitions:
+  common.AppError:
+    properties:
+      key:
+        type: string
+      log:
+        type: string
+      message:
+        type: string
+      status_code:
+        type: integer
+    type: object
+  common.Response:
+    properties:
+      data: {}
+      filter: {}
+      paging: {}
+    type: object
+  model.CategoryCreate:
+    properties:
+      category_name:
+        type: string
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      status:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.CategoryUpdate:
+    properties:
+      category_name:
+        type: string
+      description:
+        type: string
+      status:
+        type: string
+    type: object
+  model.Product:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.ProductCreate:
+    properties:
+      category_id:
+        type: integer
+      created_at:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.ProductUpdate:
+    properties:
+      category_id:
+        type: integer
+      description:
+        type: string
+      name:
+        type: string
+      price:
+        type: number
+      stock:
+        type: integer
+    type: object
+  model.User:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      phone:
+        type: string
+      role:
+        $ref: '#/definitions/model.UserRole'
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserCreate:
+    properties:
+      created_at:
+        type: string
+      email:
+        type: string
+      full_name:
+        type: string
+      id:
+        type: integer
+      password:
+        type: string
+      phone:
+        type: string
+      updated_at:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserLogin:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+      username:
+        type: string
+    type: object
+  model.UserRole:
+    enum:
+    - 1
+    - 2
+    type: integer
+    x-enum-varnames:
+    - RoleUser
+    - RoleAdmin
+host: localhost:3000
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: API documentation for Mocau Backend
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: Mocau Backend API
+  version: "1.0"
+paths:
+  /categories:
+    get:
+      description: Returns active categories by default. You can include `status`
+        filter in future if needed.
+      parameters:
+      - description: Page number (default 1)
+        in: query
+        name: page
+        type: integer
+      - description: Page size (min 5, max 100)
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/common.AppError'
+      summary: List categories with paging
+      tags:
+      - categories
+    post:
+      consumes:
+      - application/json
+      description: Create a new category with unique name. Field `status` defaults
+        to `active` if omitted.
+      parameters:
+      - description: Category data
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.CategoryCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Invalid payload or name existed
+          schema:
+            $ref: '#/definitions/common.AppError'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/common.AppError'
+      summary: Create a new category
+      tags:
+      - categories
+  /categories/{id}:
+    delete:
+      description: Set status to `deactive` instead of removing the record.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.AppError'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.AppError'
+      summary: Soft-delete a category by id
+      tags:
+      - categories
+    get:
+      description: Return a single active category by numeric id. Soft-deleted categories
+        are excluded.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/common.AppError'
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/common.AppError'
+      summary: Get category by id
+      tags:
+      - categories
+    put:
+      consumes:
+      - application/json
+      description: Partial update for category fields. Name must remain unique.
+      parameters:
+      - description: Category ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Category update payload
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/model.CategoryUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Invalid payload
+          schema:
+            $ref: '#/definitions/common.AppError'
+        "404":
+          description: Not found
+          schema:
+            $ref: '#/definitions/common.AppError'
+      summary: Update a category
+      tags:
+      - categories
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Login with username/email and password to get access token
+      parameters:
+      - description: Login credentials
+        in: body
+        name: credentials
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserLogin'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data: {}
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/common.Response'
+        "401":
+          description: Invalid credentials
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: User login
+      tags:
+      - users
+  /products:
+    post:
+      consumes:
+      - application/json
+      description: Create a new product with name, description, price, stock, category
+      parameters:
+      - description: Product data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProductCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  type: integer
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Create a new product
+      tags:
+      - products
+  /products/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve product details by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Product'
+              type: object
+        "404":
+          description: Product not found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get product by ID
+      tags:
+      - products
+    put:
+      consumes:
+      - application/json
+      description: Update product fields by ID
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Product update data
+        in: body
+        name: product
+        required: true
+        schema:
+          $ref: '#/definitions/model.ProductUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "404":
+          description: Product not found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Update a product by ID
+      tags:
+      - products
+  /profile:
+    get:
+      consumes:
+      - application/json
+      description: Get current user profile information
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.User'
+              type: object
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Get user profile
+      tags:
+      - users
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Register a new user with username, email and password
+      parameters:
+      - description: User registration data
+        in: body
+        name: user
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserCreate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  type: integer
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/common.Response'
+        "409":
+          description: Email or username already exists
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Register a new user
+      tags:
+      - users
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

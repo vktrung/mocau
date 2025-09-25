@@ -3,18 +3,14 @@ package storage
 import (
     "context"
     "mocau-backend/common"
-    "mocau-backend/module/category/model"
+    "mocau-backend/module/product/model"
     "gorm.io/gorm"
 )
 
-func (s *sqlStore) GetCategory(ctx context.Context, conditions map[string]interface{}) (*model.Category, error) {
-    db := s.db.Table(model.Category{}.TableName())
+func (s *sqlStore) GetProduct(ctx context.Context, conditions map[string]interface{}) (*model.Product, error) {
+    db := s.db.Table(model.Product{}.TableName())
 
-    if _, ok := conditions["status"]; !ok {
-        conditions["status"] = "active"
-    }
-
-    var data model.Category
+    var data model.Product
     if err := db.Where(conditions).First(&data).Error; err != nil {
         if err == gorm.ErrRecordNotFound {
             return nil, common.RecordNotFound

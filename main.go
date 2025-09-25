@@ -5,9 +5,11 @@ import (
 	"mocau-backend/component/tokenprovider/jwt"
 	"mocau-backend/docs"
 	"mocau-backend/middleware"
-	"mocau-backend/module/upload"
 	catModel "mocau-backend/module/category/model"
 	catGin "mocau-backend/module/category/transport/ginCategory"
+	prodModel "mocau-backend/module/product/model"
+	prodGin "mocau-backend/module/product/transport/ginProduct"
+	"mocau-backend/module/upload"
 	userModel "mocau-backend/module/user/model"
 	"mocau-backend/module/user/storage"
 	"mocau-backend/module/user/transport/ginUser"
@@ -62,7 +64,7 @@ func main() {
 
 	dsn := os.Getenv("DB_CONN")
 	systemSecret := os.Getenv("SECRET")
-	
+
 	// Debug: Check if environment variables are loaded
 	if dsn == "" {
 		log.Fatal("DB_CONN environment variable is not set. Please check your .env file or environment variables.")
@@ -70,7 +72,7 @@ func main() {
 	if systemSecret == "" {
 		log.Fatal("SECRET environment variable is not set. Please check your .env file or environment variables.")
 	}
-	
+
 	log.Printf("Connecting to database with DSN: %s", dsn)
 	db, err := gorm.Open(mysql.Open(dsn), &gorm.Config{})
 
@@ -81,10 +83,11 @@ func main() {
 	log.Println("Connected to database", db)
 
 	// Auto migrate database tables
-    err = db.AutoMigrate(
-        &userModel.User{},
-        &catModel.Category{},
-    )
+	err = db.AutoMigrate(
+		&userModel.User{},
+		&catModel.Category{},
+		&prodModel.Product{},
+	)
 	if err != nil {
 		log.Fatalln("Failed to migrate database:", err)
 	}
@@ -97,18 +100,18 @@ func main() {
 
 	r := gin.Default()
 	r.Use(middleware.Recover())
-	
+
 	// Add CORS middleware
 	r.Use(func(c *gin.Context) {
 		c.Header("Access-Control-Allow-Origin", "*")
 		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
-		
+
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
 		}
-		
+
 		c.Next()
 	})
 
@@ -117,7 +120,7 @@ func main() {
 	// Swagger documentation
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
 
-    v1 := r.Group("/v1")
+	v1 := r.Group("/v1")
 	{
 		v1.PUT("/upload", upload.Upload(db))
 
@@ -125,12 +128,17 @@ func main() {
 		v1.POST("/login", ginUser.Login(db, tokenProvider))
 		v1.GET("/profile", middleware.RequiredAuth(authStore, tokenProvider), ginUser.Profile())
 
-        // Category routes
-        v1.POST("/categories", catGin.CreateCategory(db))
-        v1.GET("/categories", catGin.ListCategories(db))
-        v1.GET("/categories/:id", catGin.GetCategory(db))
-        v1.PUT("/categories/:id", catGin.UpdateCategory(db))
-        v1.DELETE("/categories/:id", catGin.DeleteCategory(db))
+		// Category routes
+		v1.POST("/categories", middleware.RequiredAuth(authStore, tokenProvider), catGin.CreateCategory(db))
+		v1.GET("/categories", catGin.ListCategories(db))
+		v1.GET("/categories/:id", catGin.GetCategory(db))
+		v1.PUT("/categories/:id", middleware.RequiredAuth(authStore, tokenProvider), catGin.UpdateCategory(db))
+		v1.DELETE("/categories/:id", middleware.RequiredAuth(authStore, tokenProvider), catGin.DeleteCategory(db))
+
+		// Product routes
+		v1.POST("/products", middleware.RequiredAuth(authStore, tokenProvider), prodGin.CreateProduct(db))
+		v1.GET("/products/:id", prodGin.GetProduct(db))
+		v1.PUT("/products/:id", middleware.RequiredAuth(authStore, tokenProvider), prodGin.UpdateProduct(db))
 
 		// TODO: Add your custom routes here
 		// Example:
