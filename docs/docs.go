@@ -602,9 +602,7 @@ const docTemplate = `{
         "common.Response": {
             "type": "object",
             "properties": {
-                "data": {},
-                "filter": {},
-                "paging": {}
+                "data": {}
             }
         },
         "model.CategoryCreate": {
@@ -613,19 +611,10 @@ const docTemplate = `{
                 "category_name": {
                     "type": "string"
                 },
-                "created_at": {
-                    "type": "string"
-                },
                 "description": {
                     "type": "string"
                 },
-                "id": {
-                    "type": "integer"
-                },
                 "status": {
-                    "type": "string"
-                },
-                "updated_at": {
                     "type": "string"
                 }
             }

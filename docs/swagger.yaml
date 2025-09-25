@@ -14,22 +14,14 @@ definitions:
   common.Response:
     properties:
       data: {}
-      filter: {}
-      paging: {}
     type: object
   model.CategoryCreate:
     properties:
       category_name:
         type: string
-      created_at:
-        type: string
       description:
         type: string
-      id:
-        type: integer
       status:
-        type: string
-      updated_at:
         type: string
     type: object
   model.CategoryUpdate:
