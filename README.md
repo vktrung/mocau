@@ -1,308 +1,137 @@
-# Base Project - Go Clean Architecture
+# Mocau Backend API
 
-Đây là một base project được xây dựng theo Clean Architecture pattern, sử dụng Gin framework và GORM cho việc phát triển REST API.
+Go REST API với Clean Architecture, sử dụng Gin framework và GORM.
 
 ## Cấu trúc Project
 
 ```
-├── common/                 # Shared utilities và common types
-├── component/             # External components (JWT, etc.)
+├── common/                 # Shared utilities
+├── component/             # External components (JWT)
 ├── middleware/            # HTTP middleware
 ├── module/               # Business modules
-│   ├── user/            # User module (authentication, authorization)
+│   ├── user/            # User module
+│   ├── category/        # Category module
 │   └── upload/          # File upload module
 ├── static/              # Static files
 └── main.go             # Application entry point
 ```
 
-## Tính năng có sẵn
+## Tính năng
 
-### Authentication & Authorization
-- User registration
-- User login với JWT token
-- Protected routes với middleware
-- Role-based access control (User, Admin, Mod, Shipper)
-
-### File Upload
-- Upload files với endpoint `/v1/upload`
-
-### Database
-- MySQL integration với GORM
-- Auto-migration support
-- Common SQL model với masking
+- **Authentication**: JWT-based với middleware protection
+- **User Management**: Registration, login, profile
+- **Category CRUD**: Create, read, update, delete categories
+- **File Upload**: Upload files với endpoint `/v1/upload`
+- **Swagger Documentation**: Auto-generated API docs
+- **Database**: MySQL với GORM auto-migration
 
 ## Cài đặt và Chạy
 
 ### Yêu cầu
-- Go 1.24+
-- MySQL database (hoặc Docker)
+- Go 1.23+
+- MySQL database
 
-### Cách 1: Sử dụng Docker (Khuyến nghị)
+### Cách 1: Docker Compose (Khuyến nghị)
 
 ```bash
-# Tạo file .env từ env.example
+# Tạo file .env từ template
 cp env.example .env
-# Chỉnh sửa .env với thông tin MySQL đã cài trên VPS
 
-# Build và chạy container (chỉ App, MySQL đã có sẵn)
+# Chỉnh sửa .env với thông tin database
+nano .env
+
+# Build và chạy
 docker compose up -d --build
-
-# Hoặc chạy local (cần MySQL riêng)
-go run main.go
 ```
 
-**⚠️ Lưu ý bảo mật:**
-- File `.env` chứa thông tin nhạy cảm (password, secret key)
-- File `.env` đã được thêm vào `.gitignore` để tránh commit lên Git
-- Chỉ sử dụng `env.example` làm template, không commit file `.env` thật
-
-**Lưu ý VPS:**
-- MySQL đã cài sẵn trên VPS (không dùng Docker MySQL)
-- App container kết nối MySQL qua `localhost:3306`
-- Đảm bảo MySQL cho phép kết nối từ container
-- Cấu hình `SWAGGER_HOST` trong `.env` với IP VPS của bạn
-
-**GitHub Secrets cần thêm:**
-- `DB_CONN`: Connection string MySQL
-- `SECRET`: JWT secret key
-- `SWAGGER_HOST`: Host cho Swagger docs
-- `MYSQL_ROOT_PASSWORD`: MySQL root password
-- `MYSQL_DATABASE`: Database name
-- `MYSQL_USER`: MySQL user
-- `MYSQL_PASSWORD`: MySQL user password
-- `DOCKER_USERNAME`: Docker Hub username
-- `DOCKER_PASSWORD`: Docker Hub password
-
-#### Lệnh Docker Compose hữu ích
+### Cách 2: Chạy local
 
 ```bash
-# Build images
-docker compose build
+# Tạo file .env
+cp env.example .env
 
-# Build và chạy nền
-docker compose up -d --build
+# Chỉnh sửa .env với thông tin MySQL
+nano .env
 
-# Rebuild chỉ service app
-docker compose build app && docker compose up -d app
-
-# Xem logs của app
-docker compose logs -f app
-```
-
-### Cách 2: Cài đặt thủ công
-
-1. Cài đặt MySQL và tạo database
-2. Tạo file `.env` từ `env.example` và cấu hình:
-
-```bash
-DB_CONN=app_user:app_password@tcp(localhost:3306)/base_project?charset=utf8mb4&parseTime=True&loc=Local
-SECRET=your_super_secret_jwt_key_here
-```
-
-3. Chạy ứng dụng:
-
-```bash
-# Cài đặt dependencies
+# Cài dependencies
 go mod tidy
 
 # Chạy ứng dụng
 go run main.go
 ```
 
-Ứng dụng sẽ chạy trên port 3000.
-
-### Development Tools
-
-```bash
-# Cài đặt development tools
-make install-tools
-
-# Chạy với hot reload
-make dev
-
-# Build và run
-make run
-
-# Chạy tests
-make test
-```
-
 ## API Endpoints
 
 ### Authentication
-- `POST /v1/register` - Đăng ký user mới
+- `POST /v1/register` - Đăng ký user
 - `POST /v1/login` - Đăng nhập
-- `GET /v1/profile` - Lấy thông tin profile (cần authentication)
+- `GET /v1/profile` - Lấy profile (cần auth)
+
+### Category CRUD
+- `POST /v1/categories` - Tạo category
+- `GET /v1/categories` - Danh sách category (paging)
+- `GET /v1/categories/:id` - Lấy chi tiết category
+- `PUT /v1/categories/:id` - Cập nhật category
+- `DELETE /v1/categories/:id` - Xóa category (soft delete)
 
 ### Upload
 - `PUT /v1/upload` - Upload file
--## Swagger Documentation
 
-Dự án sử dụng [swaggo/swag](https://github.com/swaggo/swag) để tự động generate Swagger docs từ annotations.
+### Documentation
+- `GET /swagger/index.html` - Swagger UI
 
-### Cài đặt và sử dụng
+## Environment Variables
+
+```bash
+# Database
+DB_CONN=username:password@tcp(host:port)/database?charset=utf8mb4&parseTime=True&loc=Local
+
+# JWT Secret
+SECRET=your_secret_key
+
+# Swagger Host
+SWAGGER_HOST=localhost:3000
+
+# Server
+PORT=3000
+GIN_MODE=debug
+```
+
+## Swagger Documentation
 
 ```bash
 # Cài swag CLI
 go install github.com/swaggo/swag/cmd/swag@latest
 
-# Generate docs từ annotations
+# Generate docs
 swag init -g main.go -o ./docs
-
-# Chạy server
-go run main.go
 
 # Mở Swagger UI
 # http://localhost:3000/swagger/index.html
 ```
 
-### Lưu ý
-- Chỉ giữ file `docs/docs.go` (generated)
-- File `swagger.json` và `swagger.yaml` sẽ được tạo lại mỗi lần chạy `swag init`
-- Khi thay đổi annotations, cần chạy lại `swag init` để update docs
+## Development
 
+### Tạo module mới
 
-### Category (CRUD)
-- `POST /v1/categories` - Tạo category
-  - Body ví dụ:
-    ```json
-    {
-      "category_name": "Coffee Beans",
-      "description": "All kinds of beans",
-      "status": "active"
-    }
-    ```
-- `GET /v1/categories` - Danh sách category (paging `page`, `limit`)
-- `GET /v1/categories/:id` - Lấy chi tiết category
-- `PUT /v1/categories/:id` - Cập nhật category (partial)
-  - Body ví dụ:
-    ```json
-    {
-      "description": "Premium roasted beans"
-    }
-    ```
-- `DELETE /v1/categories/:id` - Deactive category (soft delete, đặt `status = "deactive"`)
-
-### Utility
-- `GET /ping` - Health check
-
-## Phát triển Module mới
-
-### 1. Tạo cấu trúc module
+1. Tạo cấu trúc thư mục:
 ```
-module/
-└── your_module/
-    ├── biz/           # Business logic
-    ├── model/         # Data models
-    ├── storage/       # Data access layer
-    └── transport/     # HTTP handlers
+module/your_module/
+├── biz/           # Business logic
+├── model/         # Data models
+├── storage/       # Data access
+└── transport/     # HTTP handlers
 ```
 
-### 2. Ví dụ tạo module Product
+2. Thêm routes vào `main.go`
 
-**Model** (`module/product/model/product.go`):
-```go
-package model
+### Database Migration
 
-import "base-project/common"
+App tự động migrate tables khi khởi động. Để tạo schema thủ công:
 
-type Product struct {
-    common.SQLModel
-    Name        string `json:"name" gorm:"column:name;"`
-    Description string `json:"description" gorm:"column:description;"`
-    Price       int    `json:"price" gorm:"column:price;"`
-}
-
-func (Product) TableName() string {
-    return "products"
-}
+```sql
+-- Xem file init.sql
 ```
-
-**Storage** (`module/product/storage/store.go`):
-```go
-package storage
-
-import (
-    "base-project/common"
-    "base-project/module/product/model"
-    "context"
-    "gorm.io/gorm"
-)
-
-type sqlStore struct {
-    db *gorm.DB
-}
-
-func NewSQLStore(db *gorm.DB) *sqlStore {
-    return &sqlStore{db: db}
-}
-
-func (s *sqlStore) CreateProduct(ctx context.Context, data *model.Product) error {
-    return s.db.Create(data).Error
-}
-```
-
-**Handler** (`module/product/transport/gin/product_handler.go`):
-```go
-package gin
-
-import (
-    "base-project/common"
-    "base-project/module/product/biz"
-    "base-project/module/product/model"
-    "base-project/module/product/storage"
-    "net/http"
-    "github.com/gin-gonic/gin"
-    "gorm.io/gorm"
-)
-
-func CreateProduct(db *gorm.DB) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        var data model.Product
-        
-        if err := c.ShouldBind(&data); err != nil {
-            c.JSON(http.StatusBadRequest, common.NewErrorResponse(err))
-            return
-        }
-        
-        store := storage.NewSQLStore(db)
-        biz := biz.NewCreateProductBiz(store)
-        
-        if err := biz.CreateProduct(c.Request.Context(), &data); err != nil {
-            c.JSON(http.StatusInternalServerError, common.NewErrorResponse(err))
-            return
-        }
-        
-        c.JSON(http.StatusOK, common.NewSuccessResponse(data, nil, nil))
-    }
-}
-```
-
-### 3. Thêm routes vào main.go
-
-```go
-// Import module mới
-productGin "base-project/module/product/transport/gin"
-
-// Trong v1 group
-products := v1.Group("/products", midAuth)
-{
-    products.POST("", productGin.CreateProduct(db))
-    products.GET("", productGin.ListProducts(db))
-    products.GET("/:id", productGin.GetProduct(db))
-    products.PATCH("/:id", productGin.UpdateProduct(db))
-    products.DELETE("/:id", productGin.DeleteProduct(db))
-}
-```
-
-## Best Practices
-
-1. **Clean Architecture**: Tuân thủ dependency rule, business logic không phụ thuộc vào framework
-2. **Error Handling**: Sử dụng custom error types trong `common/app_err.go`
-3. **Response Format**: Sử dụng common response format trong `common/app_response.go`
-4. **Database**: Sử dụng GORM với auto-migration
-5. **Authentication**: JWT-based với middleware protection
-6. **File Upload**: Sử dụng module upload có sẵn
 
 ## License
 
