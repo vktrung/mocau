@@ -296,6 +296,42 @@ const docTemplate = `{
             }
         },
         "/products": {
+            "get": {
+                "description": "Retrieve all products",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "List all products",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.Product"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                }
+            },
             "post": {
                 "description": "Create a new product with name, description, price, stock, category",
                 "consumes": [
@@ -765,9 +801,6 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "password": {
-                    "type": "string"
-                },
-                "username": {
                     "type": "string"
                 }
             }

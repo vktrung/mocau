@@ -135,10 +135,11 @@ func main() {
 		v1.PUT("/categories/:id", middleware.RequiredAuth(authStore, tokenProvider), catGin.UpdateCategory(db))
 		v1.DELETE("/categories/:id", middleware.RequiredAuth(authStore, tokenProvider), catGin.DeleteCategory(db))
 
-		// Product routes
-		v1.POST("/products", middleware.RequiredAuth(authStore, tokenProvider), prodGin.CreateProduct(db))
-		v1.GET("/products/:id", prodGin.GetProduct(db))
-		v1.PUT("/products/:id", middleware.RequiredAuth(authStore, tokenProvider), prodGin.UpdateProduct(db))
+        // Product routes
+        v1.POST("/products", middleware.RequiredAuth(authStore, tokenProvider), prodGin.CreateProduct(db))
+        v1.GET("/products", prodGin.ListProducts(db))
+        v1.GET("/products/:id", prodGin.GetProduct(db))
+        v1.PUT("/products/:id", middleware.RequiredAuth(authStore, tokenProvider), prodGin.UpdateProduct(db))
 
 		// TODO: Add your custom routes here
 		// Example:

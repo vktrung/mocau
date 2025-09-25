@@ -136,8 +136,6 @@ definitions:
         type: string
       password:
         type: string
-      username:
-        type: string
     type: object
   model.UserRole:
     enum:
@@ -341,6 +339,27 @@ paths:
       tags:
       - users
   /products:
+    get:
+      consumes:
+      - application/json
+      description: Retrieve all products
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Product'
+                  type: array
+              type: object
+      summary: List all products
+      tags:
+      - products
     post:
       consumes:
       - application/json
