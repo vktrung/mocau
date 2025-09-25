@@ -27,7 +27,7 @@ func ListCategories(db *gorm.DB) gin.HandlerFunc {
             return
         }
 
-        c.JSON(http.StatusOK, common.NewSuccessRes(result, nil, nil))
+        c.JSON(http.StatusOK, common.SimpleSuccessRes(result))
     }
 }
 
