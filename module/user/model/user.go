@@ -102,6 +102,7 @@ func (UserCreate) TableName() string {
 }
 
 type UserLogin struct {
+	Username string `json:"username" form:"username" gorm:"column:username;"`
 	Email    string `json:"email" form:"email" gorm:"column:email;"`
 	Password string `json:"password" form:"password" gorm:"column:password;"`
 }
