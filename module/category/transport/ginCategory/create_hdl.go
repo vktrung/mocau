@@ -12,13 +12,14 @@ import (
 
 // CreateCategory godoc
 // @Summary Create a new category
+// @Description Create a new category with unique name. Field `status` defaults to `active` if omitted.
 // @Tags categories
 // @Accept json
 // @Produce json
 // @Param data body model.CategoryCreate true "Category data"
-// @Success 201 {object} common.Response
-// @Failure 400 {object} common.AppError
-// @Failure 500 {object} common.AppError
+// @Success 201 {object} common.Response "Created"
+// @Failure 400 {object} common.AppError "Invalid payload or name existed"
+// @Failure 500 {object} common.AppError "Internal error"
 // @Router /categories [post]
 func CreateCategory(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {

@@ -1,22 +1,6 @@
 version: '3.8'
 
 services:
-  mysql:
-    image: mysql:8.0
-    container_name: mocau-mysql
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: rootpassword
-      MYSQL_DATABASE: base_project
-      MYSQL_USER: app_user
-      MYSQL_PASSWORD: app_password
-    ports:
-      - "3306:3306"
-    volumes:
-      - mysql_data:/var/lib/mysql
-      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
-    command: --default-authentication-plugin=mysql_native_password
-
   app:
     build: .
     container_name: mocau-backend
@@ -24,15 +8,10 @@ services:
     ports:
       - "3000:3000"
     environment:
-      - DB_CONN=app_user:app_password@tcp(mysql:3306)/base_project?charset=utf8mb4&parseTime=True&loc=Local
-      - SECRET=vktruzg
+      - DB_CONN=${DB_CONN}
+      - SECRET=${SECRET}
+      - SWAGGER_HOST=${SWAGGER_HOST}
       - GIN_MODE=release
       - PORT=3000
-    depends_on:
-      - mysql
     volumes:
       - ./static:/root/static
-
-
-volumes:
-  mysql_data:

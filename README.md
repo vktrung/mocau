@@ -40,15 +40,27 @@
 ### Cách 1: Sử dụng Docker (Khuyến nghị)
 
 ```bash
-# Khởi động database và Redis
-docker-compose up -d
+# Tạo file .env từ env.example
+cp env.example .env
+# Chỉnh sửa .env với thông tin MySQL đã cài trên VPS
 
-# Cài đặt dependencies
-go mod tidy
+# Build và chạy container (chỉ App, MySQL đã có sẵn)
+docker compose up -d --build
 
-# Chạy ứng dụng
+# Hoặc chạy local (cần MySQL riêng)
 go run main.go
 ```
+
+**⚠️ Lưu ý bảo mật:**
+- File `.env` chứa thông tin nhạy cảm (password, secret key)
+- File `.env` đã được thêm vào `.gitignore` để tránh commit lên Git
+- Chỉ sử dụng `env.example` làm template, không commit file `.env` thật
+
+**Lưu ý VPS:**
+- MySQL đã cài sẵn trên VPS (không dùng Docker MySQL)
+- App container kết nối MySQL qua `localhost:3306`
+- Đảm bảo MySQL cho phép kết nối từ container
+- Cấu hình `SWAGGER_HOST` trong `.env` với IP VPS của bạn
 
 #### Lệnh Docker Compose hữu ích
 
@@ -113,6 +125,31 @@ make test
 
 ### Upload
 - `PUT /v1/upload` - Upload file
+-## Swagger Documentation
+
+Dự án sử dụng [swaggo/swag](https://github.com/swaggo/swag) để tự động generate Swagger docs từ annotations.
+
+### Cài đặt và sử dụng
+
+```bash
+# Cài swag CLI
+go install github.com/swaggo/swag/cmd/swag@latest
+
+# Generate docs từ annotations
+swag init -g main.go -o ./docs
+
+# Chạy server
+go run main.go
+
+# Mở Swagger UI
+# http://localhost:3000/swagger/index.html
+```
+
+### Lưu ý
+- Chỉ giữ file `docs/docs.go` (generated)
+- File `swagger.json` và `swagger.yaml` sẽ được tạo lại mỗi lần chạy `swag init`
+- Khi thay đổi annotations, cần chạy lại `swag init` để update docs
+
 
 ### Category (CRUD)
 - `POST /v1/categories` - Tạo category

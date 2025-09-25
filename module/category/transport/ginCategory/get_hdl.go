@@ -12,12 +12,13 @@ import (
 
 // GetCategory godoc
 // @Summary Get category by id
+// @Description Return a single active category by numeric id. Soft-deleted categories are excluded.
 // @Tags categories
 // @Produce json
 // @Param id path int true "Category ID"
 // @Success 200 {object} common.Response
-// @Failure 404 {object} common.AppError
-// @Failure 500 {object} common.AppError
+// @Failure 404 {object} common.AppError "Not found"
+// @Failure 500 {object} common.AppError "Internal error"
 // @Router /categories/{id} [get]
 func GetCategory(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {

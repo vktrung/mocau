@@ -46,7 +46,12 @@ func main() {
 	docs.SwaggerInfo.Title = "Mocau Backend API"
 	docs.SwaggerInfo.Description = "API documentation for Mocau Backend"
 	docs.SwaggerInfo.Version = "1.0"
-	docs.SwaggerInfo.Host = "3.37.88.135:4040"
+	// Set Swagger host based on environment
+	swaggerHost := os.Getenv("SWAGGER_HOST")
+	if swaggerHost == "" {
+		swaggerHost = "localhost:3000" // Default for local development
+	}
+	docs.SwaggerInfo.Host = swaggerHost
 	docs.SwaggerInfo.BasePath = "/v1"
 
 	dsn := os.Getenv("DB_CONN")

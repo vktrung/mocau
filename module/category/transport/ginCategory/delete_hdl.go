@@ -11,7 +11,8 @@ import (
 )
 
 // DeleteCategory godoc
-// @Summary Delete a category by id
+// @Summary Soft-delete a category by id
+// @Description Set status to `deactive` instead of removing the record.
 // @Tags categories
 // @Produce json
 // @Param id path int true "Category ID"

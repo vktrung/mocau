@@ -13,14 +13,15 @@ import (
 
 // UpdateCategory godoc
 // @Summary Update a category
+// @Description Partial update for category fields. Name must remain unique.
 // @Tags categories
 // @Accept json
 // @Produce json
 // @Param id path int true "Category ID"
 // @Param data body model.CategoryUpdate true "Category update payload"
 // @Success 200 {object} common.Response
-// @Failure 400 {object} common.AppError
-// @Failure 404 {object} common.AppError
+// @Failure 400 {object} common.AppError "Invalid payload"
+// @Failure 404 {object} common.AppError "Not found"
 // @Router /categories/{id} [put]
 func UpdateCategory(db *gorm.DB) gin.HandlerFunc {
     return func(c *gin.Context) {
