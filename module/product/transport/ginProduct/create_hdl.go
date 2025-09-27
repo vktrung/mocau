@@ -7,6 +7,7 @@ import (
 	"mocau-backend/module/product/storage"
 	"mocau-backend/module/upload"
 	"net/http"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -32,9 +33,29 @@ func CreateProduct(db *gorm.DB) func(*gin.Context) {
 	return func(c *gin.Context) {
 		var data model.ProductCreate
 
-		// Bind form data
-		if err := c.ShouldBind(&data); err != nil {
-			panic(common.ErrInvalidRequest(err))
+		// Bind form data manually for multipart/form-data
+		data.Name = c.PostForm("name")
+		data.Description = c.PostForm("description")
+		
+		// Parse price
+		if priceStr := c.PostForm("price"); priceStr != "" {
+			if price, err := strconv.ParseFloat(priceStr, 64); err == nil {
+				data.Price = price
+			}
+		}
+		
+		// Parse stock
+		if stockStr := c.PostForm("stock"); stockStr != "" {
+			if stock, err := strconv.Atoi(stockStr); err == nil {
+				data.Stock = stock
+			}
+		}
+		
+		// Parse category_id
+		if categoryIdStr := c.PostForm("category_id"); categoryIdStr != "" {
+			if categoryId, err := strconv.Atoi(categoryIdStr); err == nil {
+				data.CategoryId = &categoryId
+			}
 		}
 
 		// Xử lý upload ảnh nếu có
