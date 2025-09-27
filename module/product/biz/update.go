@@ -38,7 +38,7 @@ func (biz *updateBusiness) UpdateProduct(ctx context.Context, id int, data *mode
         }
     }
 
-    // Image đã được xử lý trong upload service, không cần xử lý thêm ở đây
+    // Image đã được xử lý trong upload service với domain VPS, không cần xử lý thêm ở đây
 
     if err := biz.store.UpdateProduct(ctx, id, data); err != nil {
         return common.ErrCannotUpdateEntity("Product", err)

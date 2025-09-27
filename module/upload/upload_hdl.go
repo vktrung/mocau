@@ -4,6 +4,8 @@ import (
 	"mocau-backend/common"
 	"fmt"
 	"net/http"
+	"path/filepath"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -18,7 +20,18 @@ func Upload(db *gorm.DB) func(ctx *gin.Context) {
 			panic(common.ErrInvalidRequest(err))
 		}
 
-		dst := fmt.Sprintf("static/%d.%s", time.Now().UTC().UnixNano(), fileHeader.Filename)
+		// Lấy extension từ file gốc
+		ext := filepath.Ext(fileHeader.Filename)
+		ext = strings.ToLower(ext) // Chuyển về lowercase để so sánh
+		
+		// Kiểm tra định dạng file chỉ cho phép PNG và JPG
+		if ext != ".png" && ext != ".jpg" && ext != ".jpeg" {
+			panic(common.ErrInvalidRequest(fmt.Errorf("chỉ cho phép file PNG hoặc JPG")))
+		}
+		
+		// Tạo tên file mới với timestamp và extension
+		newFileName := fmt.Sprintf("%d%s", time.Now().UTC().UnixNano(), ext)
+		dst := fmt.Sprintf("static/%s", newFileName)
 
 		if err := c.SaveUploadedFile(fileHeader, dst); err != nil {
 
@@ -33,7 +46,7 @@ func Upload(db *gorm.DB) func(ctx *gin.Context) {
 			Extension: "",
 		}
 
-		img.Fulfill("http://localhost:3000")
+		img.Fulfill("http://160.250.5.71:3000")
 
 		c.JSON(http.StatusOK, common.SimpleSuccessRes(img))
 	}

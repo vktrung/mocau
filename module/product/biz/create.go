@@ -26,7 +26,7 @@ func (biz *createBusiness) CreateProduct(ctx context.Context, data *model.Produc
         return common.ErrInvalidRequest(common.NewCustomError(nil, "product name cannot be empty", "ErrProductNameEmpty"))
     }
 
-    // Image đã được xử lý trong upload service, không cần xử lý thêm ở đây
+    // Image đã được xử lý trong upload service với domain VPS, không cần xử lý thêm ở đây
 
     if err := biz.store.CreateProduct(ctx, data); err != nil {
         return common.ErrCannotCreateEntity("Product", err)

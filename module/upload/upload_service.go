@@ -5,6 +5,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"mocau-backend/common"
 	"os"
+	"path/filepath"
+	"strings"
 	"time"
 )
 
@@ -15,8 +17,18 @@ func UploadImage(c *gin.Context, fieldName string) (*common.Image, error) {
 		return nil, err
 	}
 
-	// Tạo tên file unique
-	dst := fmt.Sprintf("static/%d.%s", time.Now().UTC().UnixNano(), fileHeader.Filename)
+	// Lấy extension từ file gốc
+	ext := filepath.Ext(fileHeader.Filename)
+	ext = strings.ToLower(ext) // Chuyển về lowercase để so sánh
+	
+	// Kiểm tra định dạng file chỉ cho phép PNG và JPG
+	if ext != ".png" && ext != ".jpg" && ext != ".jpeg" {
+		return nil, fmt.Errorf("chỉ cho phép file PNG hoặc JPG")
+	}
+	
+	// Tạo tên file mới với timestamp và extension
+	newFileName := fmt.Sprintf("%d%s", time.Now().UTC().UnixNano(), ext)
+	dst := fmt.Sprintf("static/%s", newFileName)
 
 	// Lưu file
 	if err := c.SaveUploadedFile(fileHeader, dst); err != nil {
@@ -33,8 +45,8 @@ func UploadImage(c *gin.Context, fieldName string) (*common.Image, error) {
 		Extension: "",
 	}
 
-	// Tạo URL đầy đủ
-	img.Fulfill("http://localhost:3000")
+	// Tạo URL đầy đủ với domain VPS
+	img.Fulfill("http://160.250.5.71:3000")
 
 	return img, nil
 }
@@ -47,8 +59,8 @@ func DeleteImage(imageUrl string) error {
 
 	// Loại bỏ domain để lấy đường dẫn file
 	filePath := imageUrl
-	if len(imageUrl) > len("http://localhost:3000/") {
-		filePath = imageUrl[len("http://localhost:3000/"):]
+	if len(imageUrl) > len("http://160.250.5.71:3000/") {
+		filePath = imageUrl[len("http://160.250.5.71:3000/"):]
 	}
 
 	// Kiểm tra file có tồn tại không

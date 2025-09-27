@@ -69,7 +69,9 @@ func UpdateProduct(db *gorm.DB) func(*gin.Context) {
         }
 
         // Xử lý upload ảnh nếu có
-        if img, err := upload.UploadImage(c, "image"); err == nil {
+        if img, err := upload.UploadImage(c, "image"); err != nil {
+            panic(common.ErrInvalidRequest(err))
+        } else if img != nil {
             data.Image = img
         }
 
