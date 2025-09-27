@@ -9,36 +9,30 @@ import (
 func (s *sqlStore) GetBlogWithAuthor(ctx context.Context, id int) (*model.BlogWithAuthor, error) {
 	var result model.BlogWithAuthor
 
-	query := `
-		SELECT 
-			b.id, b.title, b.content, b.author_id, b.image, b.status, 
-			b.created_at, b.updated_at, b.deleted_at,
-			u.id as author_id, u.full_name as author_full_name
-		FROM blogs b 
-		LEFT JOIN users u ON b.author_id = u.id 
-		WHERE b.id = ? AND b.deleted_at IS NULL
-	`
-
-	row := s.db.Raw(query, id).Row()
-	
-	var authorFullName *string
-	err := row.Scan(
-		&result.Id, &result.Title, &result.Content, &result.AuthorId, &result.Image, &result.Status,
-		&result.CreatedAt, &result.UpdatedAt, &result.DeletedAt,
-		&result.Author.Id, &authorFullName,
-	)
-
+	// Lấy blog trước
+	err := s.db.Where("id = ?", id).First(&result.Blog).Error
 	if err != nil {
-		if err.Error() == "sql: no rows in result set" {
+		if err.Error() == "record not found" {
 			return nil, common.RecordNotFound
 		}
 		return nil, common.ErrDB(err)
 	}
 
-	// Set author full name
-	if authorFullName != nil {
-		result.Author.FullName = *authorFullName
+	// Lấy thông tin author
+	query := `SELECT id, full_name FROM users WHERE id = ?`
+	row := s.db.Raw(query, result.AuthorId).Row()
+	
+	var authorId int
+	var authorFullName *string
+	err = row.Scan(&authorId, &authorFullName)
+	
+	if err == nil {
+		result.Author.Id = authorId
+		if authorFullName != nil {
+			result.Author.FullName = *authorFullName
+		}
 	}
+	// Nếu không tìm thấy author, vẫn trả về blog với author empty
 
 	return &result, nil
 }

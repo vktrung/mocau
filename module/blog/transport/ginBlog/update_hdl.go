@@ -41,7 +41,7 @@ func UpdateBlog(db *gorm.DB) func(*gin.Context) {
 		user := c.MustGet(common.CurrentUser)
 		userObj, ok := user.(*userModel.User)
 		if !ok {
-			panic(common.ErrUnauthorized(nil))
+			panic(common.ErrNoPermission(nil))
 		}
 
 		// Kiểm tra quyền sở hữu blog

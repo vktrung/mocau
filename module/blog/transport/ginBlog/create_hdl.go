@@ -8,7 +8,6 @@ import (
 	"mocau-backend/module/upload"
 	userModel "mocau-backend/module/user/model"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -36,7 +35,7 @@ func CreateBlog(db *gorm.DB) func(*gin.Context) {
 		user := c.MustGet(common.CurrentUser)
 		userObj, ok := user.(*userModel.User)
 		if !ok {
-			panic(common.ErrUnauthorized(nil))
+			panic(common.ErrNoPermission(nil))
 		}
 
 		// Bind form data manually for multipart/form-data
