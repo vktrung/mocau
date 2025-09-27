@@ -1,15 +1,15 @@
 package ginProduct
 
 import (
-    "mocau-backend/common"
-    "mocau-backend/module/product/biz"
-    "mocau-backend/module/product/model"
-    "mocau-backend/module/product/storage"
-    "mocau-backend/module/upload"
-    "net/http"
+	"mocau-backend/common"
+	"mocau-backend/module/product/biz"
+	"mocau-backend/module/product/model"
+	"mocau-backend/module/product/storage"
+	"mocau-backend/module/upload"
+	"net/http"
 
-    "github.com/gin-gonic/gin"
-    "gorm.io/gorm"
+	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 // CreateProduct godoc
@@ -28,27 +28,25 @@ import (
 // @Failure 400 {object} common.Response "Invalid request data"
 // @Router /products [post]
 func CreateProduct(db *gorm.DB) func(*gin.Context) {
-    return func(c *gin.Context) {
-        var data model.ProductCreate
-        
-        // Bind form data
-        if err := c.ShouldBind(&data); err != nil {
-            panic(common.ErrInvalidRequest(err))
-        }
+	return func(c *gin.Context) {
+		var data model.ProductCreate
 
-        // Xử lý upload ảnh nếu có
-        if img, err := upload.UploadImage(c, "image"); err == nil {
-            data.Image = img
-        }
+		// Bind form data
+		if err := c.ShouldBind(&data); err != nil {
+			panic(common.ErrInvalidRequest(err))
+		}
 
-        store := storage.NewSQLStore(db)
-        b := biz.NewCreateBusiness(store)
-        if err := b.CreateProduct(c.Request.Context(), &data); err != nil {
-            panic(err)
-        }
+		// Xử lý upload ảnh nếu có
+		if img, err := upload.UploadImage(c, "image"); err == nil {
+			data.Image = img
+		}
 
-        c.JSON(http.StatusOK, common.SimpleSuccessRes(data.Id))
-    }
+		store := storage.NewSQLStore(db)
+		b := biz.NewCreateBusiness(store)
+		if err := b.CreateProduct(c.Request.Context(), &data); err != nil {
+			panic(err)
+		}
+
+		c.JSON(http.StatusOK, common.SimpleSuccessRes(true))
+	}
 }
-
-
