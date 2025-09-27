@@ -5,6 +5,8 @@ import (
 	"mocau-backend/component/tokenprovider/jwt"
 	"mocau-backend/docs"
 	"mocau-backend/middleware"
+	blogModel "mocau-backend/module/blog/model"
+	blogGin "mocau-backend/module/blog/transport/ginBlog"
 	catModel "mocau-backend/module/category/model"
 	catGin "mocau-backend/module/category/transport/ginCategory"
 	prodModel "mocau-backend/module/product/model"
@@ -87,6 +89,7 @@ func main() {
 		&userModel.User{},
 		&catModel.Category{},
 		&prodModel.Product{},
+		&blogModel.Blog{},
 	)
 	if err != nil {
 		log.Fatalln("Failed to migrate database:", err)
@@ -141,12 +144,12 @@ func main() {
         v1.GET("/products/:id", prodGin.GetProduct(db))
         v1.PUT("/products/:id", middleware.RequiredAuth(authStore, tokenProvider), prodGin.UpdateProduct(db))
 
-		// TODO: Add your custom routes here
-		// Example:
-		// protected := v1.Group("/", midAuth)
-		// {
-		//     protected.GET("/your-endpoint", yourHandler)
-		// }
+        // Blog routes
+        v1.POST("/blogs", middleware.RequiredAuth(authStore, tokenProvider), blogGin.CreateBlog(db))
+        v1.GET("/blogs", blogGin.ListBlogs(db))
+        v1.GET("/blogs/:id", blogGin.GetBlog(db))
+        v1.PUT("/blogs/:id", middleware.RequiredAuth(authStore, tokenProvider), blogGin.UpdateBlog(db))
+        v1.DELETE("/blogs/:id", middleware.RequiredAuth(authStore, tokenProvider), blogGin.DeleteBlog(db))
 	}
 
 	r.GET("/ping", func(c *gin.Context) {

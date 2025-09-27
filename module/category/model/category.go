@@ -1,12 +1,12 @@
 package model
 
 import (
-    "errors"
-    "mocau-backend/common"
+	"errors"
+	"mocau-backend/common"
 )
 
 var (
-    ErrCategoryNameCannotBeEmpty = errors.New("category name cannot be empty")
+	ErrCategoryNameCannotBeEmpty = errors.New("category name cannot be empty")
 )
 
 const (
@@ -15,25 +15,26 @@ const (
 
 type Category struct {
 	common.SQLModel
-    CategoryName string `json:"category_name" gorm:"column:category_name;size:255;uniqueIndex"`
-    Description  string `json:"description" gorm:"column:description;type:text"`
-    Status       string `json:"status" gorm:"column:status;size:50"`
+	CategoryName string `json:"category_name" gorm:"column:category_name;size:255;uniqueIndex"`
+	Description  string `json:"description" gorm:"column:description;type:text"`
+	Status       string `json:"status" gorm:"column:status;size:50"`
 }
 
 func (Category) TableName() string { return "Categories" }
 
 type CategoryCreate struct {
-    CategoryName    string `json:"category_name" gorm:"column:category_name;"`
-    Description     string `json:"description" gorm:"column:description"`
-    Status          string `json:"status" gorm:"column:status;"`
+	common.SQLModel `json:",inline"`
+	CategoryName    string `json:"category_name" gorm:"column:category_name;"`
+	Description     string `json:"description" gorm:"column:description"`
+	Status          string `json:"status" gorm:"column:status;"`
 }
 
 func (CategoryCreate) TableName() string { return Category{}.TableName() }
 
 type CategoryUpdate struct {
-    CategoryName *string `json:"category_name" gorm:"column:category_name"`
-    Description  *string `json:"description" gorm:"column:description"`
-    Status       *string `json:"status" gorm:"column:status"`
+	CategoryName *string `json:"category_name" gorm:"column:category_name"`
+	Description  *string `json:"description" gorm:"column:description"`
+	Status       *string `json:"status" gorm:"column:status"`
 }
 
 func (CategoryUpdate) TableName() string { return Category{}.TableName() }

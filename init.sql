@@ -47,3 +47,19 @@ CREATE TABLE IF NOT EXISTS products (
     INDEX idx_products_name (name),
     FOREIGN KEY (category_id) REFERENCES Categories(id) ON DELETE SET NULL
 );
+
+-- Create blogs table
+CREATE TABLE IF NOT EXISTS blogs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(255) NOT NULL,
+    content LONGTEXT,
+    author_id INT NOT NULL,
+    image JSON,
+    status VARCHAR(50) DEFAULT 'draft',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+    INDEX idx_blogs_author (author_id),
+    INDEX idx_blogs_status (status),
+    FOREIGN KEY (author_id) REFERENCES Users(id) ON DELETE CASCADE
+);

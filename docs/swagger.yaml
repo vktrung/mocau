@@ -30,13 +30,68 @@ definitions:
     properties:
       data: {}
     type: object
+  model.Blog:
+    properties:
+      author_id:
+        type: integer
+      content:
+        description: HTML content
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      image:
+        $ref: '#/definitions/common.Image'
+      status:
+        description: draft, published
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
+  model.BlogWithAuthor:
+    properties:
+      author:
+        properties:
+          full_name:
+            type: string
+          id:
+            type: integer
+        type: object
+      author_id:
+        type: integer
+      content:
+        description: HTML content
+        type: string
+      created_at:
+        type: string
+      id:
+        type: integer
+      image:
+        $ref: '#/definitions/common.Image'
+      status:
+        description: draft, published
+        type: string
+      title:
+        type: string
+      updated_at:
+        type: string
+    type: object
   model.CategoryCreate:
     properties:
       category_name:
         type: string
+      created_at:
+        type: string
       description:
         type: string
+      id:
+        type: integer
       status:
+        type: string
+      updated_at:
         type: string
     type: object
   model.CategoryUpdate:
@@ -138,6 +193,206 @@ info:
   title: Mocau Backend API
   version: "1.0"
 paths:
+  /blogs:
+    get:
+      consumes:
+      - application/json
+      description: Get list of all blogs
+      parameters:
+      - description: Filter by status (draft, published)
+        in: query
+        name: status
+        type: string
+      - description: Filter by author ID
+        in: query
+        name: author_id
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Blog'
+                  type: array
+              type: object
+        "500":
+          description: Internal error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: List all blogs
+      tags:
+      - blogs
+    post:
+      consumes:
+      - multipart/form-data
+      description: Create a new blog with title, content, image and status. Author
+        will be set automatically from logged in user.
+      parameters:
+      - description: Blog title
+        in: formData
+        name: title
+        required: true
+        type: string
+      - description: Blog HTML content
+        in: formData
+        name: content
+        required: true
+        type: string
+      - description: Blog status (draft or published)
+        in: formData
+        name: status
+        type: string
+      - description: Blog image
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Blog created successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "400":
+          description: Invalid request data
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Create a new blog
+      tags:
+      - blogs
+  /blogs/{id}:
+    delete:
+      description: Set deleted_at timestamp instead of removing the record. Only blog
+        author can delete their own blog.
+      parameters:
+      - description: Blog ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.AppError'
+        "403":
+          description: Forbidden - not blog author
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.AppError'
+      security:
+      - BearerAuth: []
+      summary: Soft-delete a blog by id
+      tags:
+      - blogs
+    get:
+      consumes:
+      - application/json
+      description: Get blog details by ID with author information
+      parameters:
+      - description: Blog ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.BlogWithAuthor'
+              type: object
+        "404":
+          description: Blog not found
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get blog by ID
+      tags:
+      - blogs
+    put:
+      consumes:
+      - multipart/form-data
+      description: Update blog fields by ID including image. Only blog author can
+        update their own blog.
+      parameters:
+      - description: Blog ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Blog title
+        in: formData
+        name: title
+        type: string
+      - description: Blog HTML content
+        in: formData
+        name: content
+        type: string
+      - description: Blog status (draft or published)
+        in: formData
+        name: status
+        type: string
+      - description: Blog image
+        in: formData
+        name: image
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  type: boolean
+              type: object
+        "403":
+          description: Forbidden - not blog author
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Blog not found
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Update a blog by ID
+      tags:
+      - blogs
   /categories:
     get:
       description: Returns all active categories by default.
