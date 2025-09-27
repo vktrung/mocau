@@ -1,13 +1,11 @@
 package upload
 
 import (
-	"mocau-backend/common"
 	"fmt"
-	"os"
-	"path/filepath"
-	"time"
-
 	"github.com/gin-gonic/gin"
+	"mocau-backend/common"
+	"os"
+	"time"
 )
 
 // UploadImage xử lý upload ảnh và trả về Image object
