@@ -11,6 +11,21 @@ definitions:
       status_code:
         type: integer
     type: object
+  common.Image:
+    properties:
+      cloud_name:
+        type: string
+      extension:
+        type: string
+      height:
+        type: integer
+      id:
+        type: integer
+      url:
+        type: string
+      width:
+        type: integer
+    type: object
   common.Response:
     properties:
       data: {}
@@ -43,6 +58,8 @@ definitions:
         type: string
       id:
         type: integer
+      image:
+        $ref: '#/definitions/common.Image'
       name:
         type: string
       price:
@@ -51,38 +68,6 @@ definitions:
         type: integer
       updated_at:
         type: string
-    type: object
-  model.ProductCreate:
-    properties:
-      category_id:
-        type: integer
-      created_at:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      price:
-        type: number
-      stock:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  model.ProductUpdate:
-    properties:
-      category_id:
-        type: integer
-      description:
-        type: string
-      name:
-        type: string
-      price:
-        type: number
-      stock:
-        type: integer
     type: object
   model.User:
     properties:
@@ -346,15 +331,37 @@ paths:
       - products
     post:
       consumes:
-      - application/json
+      - multipart/form-data
       description: Create a new product with name, description, price, stock, category
+        and image
       parameters:
-      - description: Product data
-        in: body
-        name: product
+      - description: Product name
+        in: formData
+        name: name
         required: true
-        schema:
-          $ref: '#/definitions/model.ProductCreate'
+        type: string
+      - description: Product description
+        in: formData
+        name: description
+        type: string
+      - description: Product price
+        in: formData
+        name: price
+        required: true
+        type: number
+      - description: Product stock
+        in: formData
+        name: stock
+        required: true
+        type: integer
+      - description: Category ID
+        in: formData
+        name: category_id
+        type: integer
+      - description: Product image
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:
@@ -406,20 +413,38 @@ paths:
       - products
     put:
       consumes:
-      - application/json
-      description: Update product fields by ID
+      - multipart/form-data
+      description: Update product fields by ID including image
       parameters:
       - description: Product ID
         in: path
         name: id
         required: true
         type: integer
-      - description: Product update data
-        in: body
-        name: product
-        required: true
-        schema:
-          $ref: '#/definitions/model.ProductUpdate'
+      - description: Product name
+        in: formData
+        name: name
+        type: string
+      - description: Product description
+        in: formData
+        name: description
+        type: string
+      - description: Product price
+        in: formData
+        name: price
+        type: number
+      - description: Product stock
+        in: formData
+        name: stock
+        type: integer
+      - description: Category ID
+        in: formData
+        name: category_id
+        type: integer
+      - description: Product image
+        in: formData
+        name: image
+        type: file
       produces:
       - application/json
       responses:

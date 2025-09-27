@@ -5,6 +5,7 @@ import (
     "mocau-backend/module/product/biz"
     "mocau-backend/module/product/model"
     "mocau-backend/module/product/storage"
+    "mocau-backend/module/upload"
     "net/http"
     "strconv"
 
@@ -14,12 +15,17 @@ import (
 
 // UpdateProduct godoc
 // @Summary Update a product by ID
-// @Description Update product fields by ID
+// @Description Update product fields by ID including image
 // @Tags products
-// @Accept json
+// @Accept multipart/form-data
 // @Produce json
 // @Param id path int true "Product ID"
-// @Param product body model.ProductUpdate true "Product update data"
+// @Param name formData string false "Product name"
+// @Param description formData string false "Product description"
+// @Param price formData number false "Product price"
+// @Param stock formData integer false "Product stock"
+// @Param category_id formData integer false "Category ID"
+// @Param image formData file false "Product image"
 // @Success 200 {object} common.Response{data=bool}
 // @Failure 404 {object} common.Response "Product not found"
 // @Router /products/{id} [put]
@@ -31,8 +37,15 @@ func UpdateProduct(db *gorm.DB) func(*gin.Context) {
         }
 
         var data model.ProductUpdate
+        
+        // Bind form data
         if err := c.ShouldBind(&data); err != nil {
-            panic(err)
+            panic(common.ErrInvalidRequest(err))
+        }
+
+        // Xử lý upload ảnh nếu có
+        if img, err := upload.UploadImage(c, "image"); err == nil {
+            data.Image = img
         }
 
         store := storage.NewSQLStore(db)
