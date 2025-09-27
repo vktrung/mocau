@@ -11,7 +11,11 @@ services:
       - DB_CONN=${DB_CONN}
       - SECRET=${SECRET}
       - SWAGGER_HOST=${SWAGGER_HOST}
+      - BASE_URL=${BASE_URL}
       - GIN_MODE=release
       - PORT=3000
     volumes:
+      # Mount VPS /media directory for persistent storage
+      - /media:/media
+      # Backward compatibility for static files
       - ./static:/root/static

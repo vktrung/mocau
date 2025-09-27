@@ -118,7 +118,10 @@ func main() {
 		c.Next()
 	})
 
+	// Serve static files (backward compatibility)
 	r.Static("/static", "./static")
+	// Serve media files from VPS /media directory
+	r.Static("/media", "/media")
 
 	// Swagger documentation
 	r.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
