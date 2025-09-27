@@ -50,6 +50,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new category with unique name. Field ` + "`" + `status` + "`" + ` defaults to ` + "`" + `active` + "`" + ` if omitted.",
                 "consumes": [
                     "application/json"
@@ -135,6 +140,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Partial update for category fields. Name must remain unique.",
                 "consumes": [
                     "application/json"
@@ -186,6 +196,11 @@ const docTemplate = `{
                 }
             },
             "delete": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Set status to ` + "`" + `deactive` + "`" + ` instead of removing the record.",
                 "produces": [
                     "application/json"
@@ -319,6 +334,11 @@ const docTemplate = `{
                 }
             },
             "post": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Create a new product with name, description, price, stock, category and image",
                 "consumes": [
                     "multipart/form-data"
@@ -449,6 +469,11 @@ const docTemplate = `{
                 }
             },
             "put": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Update product fields by ID including image",
                 "consumes": [
                     "multipart/form-data"

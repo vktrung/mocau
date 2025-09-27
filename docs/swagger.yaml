@@ -182,6 +182,8 @@ paths:
           description: Internal error
           schema:
             $ref: '#/definitions/common.AppError'
+      security:
+      - BearerAuth: []
       summary: Create a new category
       tags:
       - categories
@@ -209,6 +211,8 @@ paths:
           description: Not Found
           schema:
             $ref: '#/definitions/common.AppError'
+      security:
+      - BearerAuth: []
       summary: Soft-delete a category by id
       tags:
       - categories
@@ -270,6 +274,8 @@ paths:
           description: Not found
           schema:
             $ref: '#/definitions/common.AppError'
+      security:
+      - BearerAuth: []
       summary: Update a category
       tags:
       - categories
@@ -378,6 +384,8 @@ paths:
           description: Invalid request data
           schema:
             $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
       summary: Create a new product
       tags:
       - products
@@ -461,6 +469,8 @@ paths:
           description: Product not found
           schema:
             $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
       summary: Update a product by ID
       tags:
       - products

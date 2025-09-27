@@ -19,6 +19,7 @@ import (
 // @Tags products
 // @Accept multipart/form-data
 // @Produce json
+// @Security BearerAuth
 // @Param id path int true "Product ID"
 // @Param name formData string false "Product name"
 // @Param description formData string false "Product description"

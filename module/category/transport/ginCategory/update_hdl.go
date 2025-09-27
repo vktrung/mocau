@@ -17,6 +17,7 @@ import (
 // @Tags categories
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path int true "Category ID"
 // @Param data body model.CategoryUpdate true "Category update payload"
 // @Success 200 {object} common.Response

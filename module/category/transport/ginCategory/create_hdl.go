@@ -16,6 +16,7 @@ import (
 // @Tags categories
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param data body model.CategoryCreate true "Category data"
 // @Success 201 {object} common.Response "Created"
 // @Failure 400 {object} common.AppError "Invalid payload or name existed"

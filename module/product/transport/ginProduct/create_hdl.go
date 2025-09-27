@@ -18,6 +18,7 @@ import (
 // @Tags products
 // @Accept multipart/form-data
 // @Produce json
+// @Security BearerAuth
 // @Param name formData string true "Product name"
 // @Param description formData string false "Product description"
 // @Param price formData number true "Product price"

@@ -15,6 +15,7 @@ import (
 // @Description Set status to `deactive` instead of removing the record.
 // @Tags categories
 // @Produce json
+// @Security BearerAuth
 // @Param id path int true "Category ID"
 // @Success 200 {object} common.Response
 // @Failure 400 {object} common.AppError
