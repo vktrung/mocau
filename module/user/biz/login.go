@@ -51,6 +51,11 @@ func (business *loginBusiness) Login(ctx context.Context, data *model.UserLogin)
 		return nil, model.ErrEmailOrPasswordInvalid
 	}
 
+	// Check if account is active
+	if user.Status != "active" {
+		return nil, model.ErrAccountInactive
+	}
+
 	payload := &common.TokenPayload{
 		UId:   user.Id,
 		URole: user.Role.String(),

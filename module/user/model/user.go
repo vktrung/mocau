@@ -158,4 +158,10 @@ var (
 		"username has already existed",
 		"ErrUsernameExisted",
 	)
+
+	ErrAccountInactive = common.NewCustomError(
+		errors.New("account is inactive or banned"),
+		"account is inactive or banned",
+		"ErrAccountInactive",
+	)
 )
