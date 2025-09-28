@@ -118,6 +118,16 @@ type UserFilter struct {
 	Role   string `json:"role" form:"role"`
 }
 
+type UserUpdate struct {
+	FullName *string `json:"full_name" gorm:"column:full_name;"`
+	Phone    *string `json:"phone" gorm:"column:phone;"`
+	Email    *string `json:"email" gorm:"column:email;size:100;uniqueIndex"`
+}
+
+func (UserUpdate) TableName() string {
+	return User{}.TableName()
+}
+
 //type Account struct {
 //	AccessToken  *tokenprovider.Token `json:"access_token"`
 //	RefreshToken *tokenprovider.Token `json:"refresh_token"`

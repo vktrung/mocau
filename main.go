@@ -104,6 +104,8 @@ func main() {
 
 	// Initialize user business logic
 	userListBiz := userBiz.NewListUserBusiness(authStore)
+	userUpdateStatusBiz := userBiz.NewUpdateUserStatusBusiness(authStore)
+	userUpdateProfileBiz := userBiz.NewUpdateUserProfileBusiness(authStore)
 
 	r := gin.Default()
 	r.Use(middleware.Recover())
@@ -138,6 +140,8 @@ func main() {
 		v1.POST("/login", ginUser.Login(db, tokenProvider))
 		v1.GET("/profile", middleware.RequiredAuth(authStore, tokenProvider), ginUser.Profile())
 		v1.GET("/users", middleware.RequiredAuth(authStore, tokenProvider), ginUser.ListUsers(userListBiz))
+		v1.PUT("/users/:id/toggle-status", middleware.RequiredAuth(authStore, tokenProvider), ginUser.ToggleUserStatus(userUpdateStatusBiz))
+		v1.PUT("/users/:id/profile", middleware.RequiredAuth(authStore, tokenProvider), ginUser.UpdateProfile(userUpdateProfileBiz))
 
 		// Category routes
 		v1.POST("/categories", middleware.RequiredAuth(authStore, tokenProvider), catGin.CreateCategory(db))
