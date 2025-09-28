@@ -138,6 +138,8 @@ definitions:
         type: string
       role:
         $ref: '#/definitions/model.UserRole'
+      status:
+        type: string
       updated_at:
         type: string
       username:
@@ -156,6 +158,8 @@ definitions:
       password:
         type: string
       phone:
+        type: string
+      status:
         type: string
       updated_at:
         type: string
@@ -788,6 +792,51 @@ paths:
           schema:
             $ref: '#/definitions/common.Response'
       summary: Register a new user
+      tags:
+      - users
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get a list of all users with optional filtering
+      parameters:
+      - description: Filter by status
+        in: query
+        name: status
+        type: string
+      - description: Filter by role
+        in: query
+        name: role
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Users retrieved successfully
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.User'
+                  type: array
+              type: object
+        "400":
+          description: Bad request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: List all users
       tags:
       - users
 securityDefinitions:

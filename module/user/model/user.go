@@ -65,6 +65,7 @@ type User struct {
 	FullName  string   `json:"full_name" gorm:"column:full_name;"`
 	Phone     string   `json:"phone" gorm:"column:phone;"`
 	Role      UserRole `json:"role" gorm:"column:role;size:20;"`
+	Status    string   `json:"status" gorm:"column:status;size:20;default:'active'"`
 }
 
 func (u *User) GetUserId() int {
@@ -95,6 +96,7 @@ type UserCreate struct {
 	FullName        string `json:"full_name" gorm:"column:full_name;"`
 	Phone           string `json:"phone" gorm:"column:phone;"`
 	Role            string `json:"-" gorm:"column:role;"`
+	Status          string `json:"status" gorm:"column:status;"`
 }
 
 func (UserCreate) TableName() string {
@@ -109,6 +111,11 @@ type UserLogin struct {
 
 func (UserLogin) TableName() string {
 	return User{}.TableName()
+}
+
+type UserFilter struct {
+	Status string `json:"status" form:"status"`
+	Role   string `json:"role" form:"role"`
 }
 
 //type Account struct {

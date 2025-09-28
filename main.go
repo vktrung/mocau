@@ -13,6 +13,7 @@ import (
 	prodGin "mocau-backend/module/product/transport/ginProduct"
 	"mocau-backend/module/upload"
 	userModel "mocau-backend/module/user/model"
+	userBiz "mocau-backend/module/user/biz"
 	"mocau-backend/module/user/storage"
 	"mocau-backend/module/user/transport/ginUser"
 	"net/http"
@@ -101,6 +102,9 @@ func main() {
 	tokenProvider := jwt.NewTokenJwtProvider("jwt", systemSecret)
 	// midAuth := middleware.RequiredAuth(authStore, tokenProvider) // Uncomment when needed
 
+	// Initialize user business logic
+	userListBiz := userBiz.NewListUserBusiness(authStore)
+
 	r := gin.Default()
 	r.Use(middleware.Recover())
 
@@ -133,6 +137,7 @@ func main() {
 		v1.POST("/register", ginUser.Register(db))
 		v1.POST("/login", ginUser.Login(db, tokenProvider))
 		v1.GET("/profile", middleware.RequiredAuth(authStore, tokenProvider), ginUser.Profile())
+		v1.GET("/users", middleware.RequiredAuth(authStore, tokenProvider), ginUser.ListUsers(userListBiz))
 
 		// Category routes
 		v1.POST("/categories", middleware.RequiredAuth(authStore, tokenProvider), catGin.CreateCategory(db))

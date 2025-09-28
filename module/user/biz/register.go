@@ -43,6 +43,7 @@ func (business *registerBusiness) Register(ctx context.Context, data *model.User
 	// Hash password (without salt as per new schema)
 	data.Password = business.hasher.Hash(data.Password)
 	data.Role = "user" // hard code
+	data.Status = "active" // set default status
 
 	if err := business.registerStorage.CreateUser(ctx, data); err != nil {
 		return common.ErrCannotCreateEntity(model.EntityName, err)

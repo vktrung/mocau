@@ -13,11 +13,13 @@ CREATE TABLE IF NOT EXISTS Users (
     full_name VARCHAR(255),
     phone VARCHAR(255),
     role ENUM('user', 'admin') DEFAULT 'user',
+    status VARCHAR(20) DEFAULT 'active',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     INDEX idx_users_email (email),
     INDEX idx_users_username (username),
-    INDEX idx_users_role (role)
+    INDEX idx_users_role (role),
+    INDEX idx_users_status (status)
 );
 
 -- Create categories table
