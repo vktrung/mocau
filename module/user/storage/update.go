@@ -4,8 +4,6 @@ import (
 	"context"
 	"mocau-backend/common"
 	"mocau-backend/module/user/model"
-
-	"gorm.io/gorm"
 )
 
 func (s *sqlStore) UpdateUserStatus(ctx context.Context, id int, status string) error {
