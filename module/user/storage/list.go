@@ -4,8 +4,6 @@ import (
 	"mocau-backend/common"
 	"mocau-backend/module/user/model"
 	"context"
-
-	"gorm.io/gorm"
 )
 
 func (s *sqlStore) ListUsers(ctx context.Context, filter *model.UserFilter, moreInfo ...string) ([]model.User, error) {
