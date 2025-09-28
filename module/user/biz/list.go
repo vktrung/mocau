@@ -9,15 +9,15 @@ type ListUserStorage interface {
 	ListUsers(ctx context.Context, filter *model.UserFilter, moreInfo ...string) ([]model.User, error)
 }
 
-type listUserBusiness struct {
+type ListUserBusiness struct {
 	store ListUserStorage
 }
 
-func NewListUserBusiness(store ListUserStorage) *listUserBusiness {
-	return &listUserBusiness{store: store}
+func NewListUserBusiness(store ListUserStorage) *ListUserBusiness {
+	return &ListUserBusiness{store: store}
 }
 
-func (business *listUserBusiness) ListUsers(ctx context.Context, filter *model.UserFilter) ([]model.User, error) {
+func (business *ListUserBusiness) ListUsers(ctx context.Context, filter *model.UserFilter) ([]model.User, error) {
 	users, err := business.store.ListUsers(ctx, filter)
 
 	if err != nil {
