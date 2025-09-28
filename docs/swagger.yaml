@@ -183,6 +183,15 @@ definitions:
     x-enum-varnames:
     - RoleUser
     - RoleAdmin
+  model.UserUpdate:
+    properties:
+      email:
+        type: string
+      full_name:
+        type: string
+      phone:
+        type: string
+    type: object
 host: localhost:3000
 info:
   contact:
@@ -837,6 +846,82 @@ paths:
       security:
       - BearerAuth: []
       summary: List all users
+      tags:
+      - users
+  /users/{id}/profile:
+    put:
+      consumes:
+      - application/json
+      description: Update user profile information (full_name, phone, email)
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Profile update request
+        in: body
+        name: profile
+        required: true
+        schema:
+          $ref: '#/definitions/model.UserUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User profile updated successfully
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Update user profile
+      tags:
+      - users
+  /users/{id}/toggle-status:
+    put:
+      consumes:
+      - application/json
+      description: Toggle user status between active and inactive
+      parameters:
+      - description: User ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: User status toggled successfully
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Invalid request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "401":
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: User not found
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Toggle user status
       tags:
       - users
 securityDefinitions:
