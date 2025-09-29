@@ -3,6 +3,7 @@ package biz
 import (
 	"context"
 	"errors"
+	"gorm.io/gorm"
 	"mocau-backend/common"
 	"mocau-backend/module/orderitem/model"
 	"mocau-backend/module/orderitem/storage"

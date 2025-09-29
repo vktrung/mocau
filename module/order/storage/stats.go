@@ -6,13 +6,13 @@ import (
 )
 
 type OrderStats struct {
-	TotalOrders     int     `json:"total_orders"`
-	PendingOrders   int     `json:"pending_orders"`
-	ConfirmedOrders int     `json:"confirmed_orders"`
-	CompletedOrders int     `json:"completed_orders"`
-	CancelledOrders int     `json:"cancelled_orders"`
+	TotalOrders     int64   `json:"total_orders"`
+	PendingOrders   int64   `json:"pending_orders"`
+	ConfirmedOrders int64   `json:"confirmed_orders"`
+	CompletedOrders int64   `json:"completed_orders"`
+	CancelledOrders int64   `json:"cancelled_orders"`
 	TotalRevenue    float64 `json:"total_revenue"`
-	TodayOrders     int     `json:"today_orders"`
+	TodayOrders     int64   `json:"today_orders"`
 	TodayRevenue    float64 `json:"today_revenue"`
 }
 

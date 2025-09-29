@@ -2,6 +2,7 @@ package storage
 
 import (
 	"context"
+	"gorm.io/gorm"
 	"mocau-backend/common"
 	"mocau-backend/module/order/model"
 )
@@ -18,7 +19,7 @@ func (s *sqlStore) GetOrder(ctx context.Context, conditions map[string]interface
 
 	if err := db.Where(conditions).First(&order).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, common.ErrRecordNotFound
+			return nil, common.RecordNotFound
 		}
 		return nil, common.ErrDB(err)
 	}

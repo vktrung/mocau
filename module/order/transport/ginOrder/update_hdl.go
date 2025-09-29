@@ -46,7 +46,8 @@ func UpdateOrder(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Get updated order
-		updatedOrder, err := business.GetOrder(c.Request.Context(), id)
+		getBusiness := biz.NewGetOrderBusiness(store)
+		updatedOrder, err := getBusiness.GetOrder(c.Request.Context(), id)
 		if err != nil {
 			panic(err)
 		}
@@ -93,7 +94,8 @@ func UpdateOrderStatus(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		// Get updated order
-		updatedOrder, err := business.GetOrder(c.Request.Context(), id)
+		getBusiness := biz.NewGetOrderBusiness(store)
+		updatedOrder, err := getBusiness.GetOrder(c.Request.Context(), id)
 		if err != nil {
 			panic(err)
 		}

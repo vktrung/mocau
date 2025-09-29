@@ -28,13 +28,13 @@ func (s *sqlStore) UpdateOrderItemQuantity(ctx context.Context, id int, quantity
 	// Get current order item
 	var orderItem model.OrderItem
 	if err := s.db.Where("id = ?", id).First(&orderItem).Error; err != nil {
-		return common.ErrRecordNotFound
+		return common.RecordNotFound
 	}
 
 	// Get current product price
 	var product productmodel.Product
 	if err := s.db.Where("id = ?", orderItem.ProductId).First(&product).Error; err != nil {
-		return common.ErrRecordNotFound
+		return common.RecordNotFound
 	}
 
 	// Update quantity and price

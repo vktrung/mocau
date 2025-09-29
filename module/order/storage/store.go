@@ -1,9 +1,7 @@
 package storage
 
 import (
-	"context"
 	"gorm.io/gorm"
-	"mocau-backend/module/order/model"
 )
 
 type sqlStore struct {

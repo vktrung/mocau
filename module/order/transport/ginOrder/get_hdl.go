@@ -1,6 +1,7 @@
 package ginOrder
 
 import (
+	"errors"
 	"net/http"
 	"strconv"
 
@@ -58,11 +59,7 @@ func GetOrderByOrderNumber(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		orderNumber := c.Param("order_number")
 		if orderNumber == "" {
-			c.JSON(http.StatusBadRequest, common.Response{
-				Status:  "error",
-				Message: "Order number is required",
-			})
-			return
+			panic(common.ErrInvalidRequest(errors.New("order number is required")))
 		}
 
 		store := storage.NewSQLStore(db)

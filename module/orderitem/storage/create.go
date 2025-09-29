@@ -12,13 +12,13 @@ func (s *sqlStore) CreateOrderItem(ctx context.Context, data *model.OrderItemCre
 	// Check if order exists
 	var order ordermodel.Order
 	if err := s.db.Where("id = ?", data.OrderId).First(&order).Error; err != nil {
-		return common.ErrRecordNotFound
+		return common.RecordNotFound
 	}
 
 	// Check if product exists and get current price
 	var product productmodel.Product
 	if err := s.db.Where("id = ?", data.ProductId).First(&product).Error; err != nil {
-		return common.ErrRecordNotFound
+		return common.RecordNotFound
 	}
 
 	// Check if order item already exists for this order and product

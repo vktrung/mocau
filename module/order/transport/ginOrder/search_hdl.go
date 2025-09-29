@@ -7,7 +7,6 @@ import (
 	"gorm.io/gorm"
 	"mocau-backend/common"
 	"mocau-backend/module/order/biz"
-	"mocau-backend/module/order/model"
 	"mocau-backend/module/order/storage"
 )
 

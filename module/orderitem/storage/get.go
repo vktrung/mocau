@@ -12,7 +12,7 @@ func (s *sqlStore) GetOrderItem(ctx context.Context, id int) (*model.OrderItem, 
 
 	if err := s.db.Preload("Order").Preload("Product").Where("id = ?", id).First(&orderItem).Error; err != nil {
 		if err == gorm.ErrRecordNotFound {
-			return nil, common.ErrRecordNotFound
+			return nil, common.RecordNotFound
 		}
 		return nil, common.ErrDB(err)
 	}

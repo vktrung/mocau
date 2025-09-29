@@ -2,7 +2,7 @@ package biz
 
 import (
 	"context"
-	"mocau-backend/common"
+	"gorm.io/gorm"
 	"mocau-backend/module/order/model"
 	"mocau-backend/module/order/storage"
 )
