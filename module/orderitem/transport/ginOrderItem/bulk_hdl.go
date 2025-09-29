@@ -1,8 +1,8 @@
 package ginOrderItem
 
 import (
+	"errors"
 	"net/http"
-	"strconv"
 
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -18,25 +18,25 @@ import (
 // @Tags order-items
 // @Accept json
 // @Produce json
-// @Param order_id path int true "Order ID"
 // @Param items body []model.OrderItemCreate true "Order items to create"
 // @Success 201 {object} common.Response
 // @Failure 400 {object} common.Response
 // @Failure 500 {object} common.Response
 // @Security BearerAuth
-// @Router /orders/{order_id}/items/bulk [post]
+// @Router /order-items/bulk [post]
 func BulkCreateOrderItems(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
-		orderId, err := strconv.Atoi(c.Param("order_id"))
-		if err != nil {
-			panic(common.ErrInvalidRequest(err))
-		}
-
 		var items []model.OrderItemCreate
 		if err := c.ShouldBindJSON(&items); err != nil {
 			panic(common.ErrInvalidRequest(err))
 		}
 
+		// Get order_id from first item
+		if len(items) == 0 {
+			panic(common.ErrInvalidRequest(errors.New("no items provided")))
+		}
+
+		orderId := items[0].OrderId
 		store := storage.NewSQLStore(db)
 		business := biz.NewBulkOrderItemBusiness(store)
 

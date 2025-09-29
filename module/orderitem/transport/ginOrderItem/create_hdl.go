@@ -22,7 +22,7 @@ import (
 // @Failure 400 {object} common.Response
 // @Failure 500 {object} common.Response
 // @Security BearerAuth
-// @Router /orders/{order_id}/items [post]
+// @Router /order-items [post]
 func CreateOrderItem(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var data model.OrderItemCreate

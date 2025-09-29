@@ -54,7 +54,7 @@ func GetOrderItem(db *gorm.DB) gin.HandlerFunc {
 // @Failure 400 {object} common.Response
 // @Failure 500 {object} common.Response
 // @Security BearerAuth
-// @Router /orders/{order_id}/items [get]
+// @Router /order-items/order/{order_id} [get]
 func ListOrderItemsByOrder(db *gorm.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		orderId, err := strconv.Atoi(c.Param("order_id"))
