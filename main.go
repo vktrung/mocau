@@ -9,6 +9,10 @@ import (
 	blogGin "mocau-backend/module/blog/transport/ginBlog"
 	catModel "mocau-backend/module/category/model"
 	catGin "mocau-backend/module/category/transport/ginCategory"
+	orderModel "mocau-backend/module/order/model"
+	orderGin "mocau-backend/module/order/transport/ginOrder"
+	orderitemModel "mocau-backend/module/orderitem/model"
+	orderitemGin "mocau-backend/module/orderitem/transport/ginOrderItem"
 	prodModel "mocau-backend/module/product/model"
 	prodGin "mocau-backend/module/product/transport/ginProduct"
 	"mocau-backend/module/upload"
@@ -91,6 +95,8 @@ func main() {
 		&catModel.Category{},
 		&prodModel.Product{},
 		&blogModel.Blog{},
+		&orderModel.Order{},
+		&orderitemModel.OrderItem{},
 	)
 	if err != nil {
 		log.Fatalln("Failed to migrate database:", err)
@@ -162,6 +168,28 @@ func main() {
         v1.GET("/blogs/:id", blogGin.GetBlog(db))
         v1.PUT("/blogs/:id", middleware.RequiredAuth(authStore, tokenProvider), blogGin.UpdateBlog(db))
         v1.DELETE("/blogs/:id", middleware.RequiredAuth(authStore, tokenProvider), blogGin.DeleteBlog(db))
+
+        // Order routes
+        v1.POST("/orders", orderGin.CreateOrder(db))
+        v1.GET("/orders", middleware.RequiredAuth(authStore, tokenProvider), orderGin.ListOrders(db))
+        v1.GET("/orders/stats", middleware.RequiredAuth(authStore, tokenProvider), orderGin.GetOrderStats(db))
+        v1.GET("/orders/search", middleware.RequiredAuth(authStore, tokenProvider), orderGin.SearchOrders(db))
+        v1.GET("/orders/:id", middleware.RequiredAuth(authStore, tokenProvider), orderGin.GetOrder(db))
+        v1.GET("/orders/number/:order_number", orderGin.GetOrderByOrderNumber(db))
+        v1.PUT("/orders/:id", middleware.RequiredAuth(authStore, tokenProvider), orderGin.UpdateOrder(db))
+        v1.PUT("/orders/:id/status", middleware.RequiredAuth(authStore, tokenProvider), orderGin.UpdateOrderStatus(db))
+        v1.DELETE("/orders/:id", middleware.RequiredAuth(authStore, tokenProvider), orderGin.DeleteOrder(db))
+
+        // Order Item routes
+        v1.POST("/orders/:order_id/items", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.CreateOrderItem(db))
+        v1.POST("/orders/:order_id/items/bulk", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.BulkCreateOrderItems(db))
+        v1.GET("/orders/:order_id/items", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.ListOrderItemsByOrder(db))
+        v1.GET("/order-items/:id", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.GetOrderItem(db))
+        v1.PUT("/order-items/:id", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.UpdateOrderItem(db))
+        v1.PUT("/order-items/:id/quantity", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.UpdateOrderItemQuantity(db))
+        v1.PUT("/order-items/bulk", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.BulkUpdateOrderItems(db))
+        v1.DELETE("/order-items/:id", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.DeleteOrderItem(db))
+        v1.DELETE("/order-items/bulk", middleware.RequiredAuth(authStore, tokenProvider), orderitemGin.BulkDeleteOrderItems(db))
 	}
 
 	r.GET("/ping", func(c *gin.Context) {

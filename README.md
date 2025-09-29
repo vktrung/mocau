@@ -11,6 +11,9 @@ Go REST API với Clean Architecture, sử dụng Gin framework và GORM.
 ├── module/               # Business modules
 │   ├── user/            # User module
 │   ├── category/        # Category module
+│   ├── product/         # Product module
+│   ├── blog/            # Blog module
+│   ├── order/           # Order module
 │   └── upload/          # File upload module
 ├── static/              # Static files
 └── main.go             # Application entry point
@@ -21,6 +24,9 @@ Go REST API với Clean Architecture, sử dụng Gin framework và GORM.
 - **Authentication**: JWT-based với middleware protection
 - **User Management**: Registration, login, profile
 - **Category CRUD**: Create, read, update, delete categories
+- **Product CRUD**: Create, read, update products
+- **Blog CRUD**: Create, read, update, delete blogs
+- **Order Management**: Simple order system (customer info → order → staff confirmation)
 - **File Upload**: Upload files với endpoint `/v1/upload`
 - **Swagger Documentation**: Auto-generated API docs
 - **Database**: MySQL với GORM auto-migration

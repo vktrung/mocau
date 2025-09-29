@@ -65,3 +65,50 @@ CREATE TABLE IF NOT EXISTS blogs (
     INDEX idx_blogs_status (status),
     FOREIGN KEY (author_id) REFERENCES Users(id) ON DELETE CASCADE
 );
+
+-- Create orders table
+CREATE TABLE IF NOT EXISTS orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_number VARCHAR(50) UNIQUE NOT NULL,
+    status ENUM('pending', 'confirmed', 'completed', 'cancelled') DEFAULT 'pending',
+    total_amount DECIMAL(12,2) DEFAULT 0,
+    
+    -- Thông tin khách hàng
+    customer_name VARCHAR(255) NOT NULL,
+    customer_phone VARCHAR(20) NOT NULL,
+    customer_email VARCHAR(100),
+    shipping_address TEXT NOT NULL,
+    notes TEXT,
+    
+    -- Thông tin xử lý
+    processed_by INT NULL,
+    processed_at TIMESTAMP NULL,
+    completed_at TIMESTAMP NULL,
+    
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+    
+    INDEX idx_orders_status (status),
+    INDEX idx_orders_order_number (order_number),
+    INDEX idx_orders_customer_phone (customer_phone),
+    INDEX idx_orders_processed_by (processed_by),
+    FOREIGN KEY (processed_by) REFERENCES Users(id) ON DELETE SET NULL
+);
+
+-- Create order_items table
+CREATE TABLE IF NOT EXISTS order_items (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(12,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    deleted_at TIMESTAMP NULL,
+    INDEX idx_order_items_order (order_id),
+    INDEX idx_order_items_product (product_id),
+    INDEX idx_order_items_created (created_at),
+    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);

@@ -103,6 +103,155 @@ definitions:
       status:
         type: string
     type: object
+  model.Order:
+    properties:
+      completed_at:
+        type: string
+      created_at:
+        type: string
+      customer_email:
+        type: string
+      customer_name:
+        description: Thông tin khách hàng
+        type: string
+      customer_phone:
+        type: string
+      id:
+        type: integer
+      notes:
+        type: string
+      order_number:
+        type: string
+      processed_at:
+        type: string
+      processed_by:
+        description: Thông tin xử lý
+        type: integer
+      processor:
+        allOf:
+        - $ref: '#/definitions/model.User'
+        description: Relations
+      shipping_address:
+        type: string
+      status:
+        $ref: '#/definitions/model.OrderStatus'
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  model.OrderCreate:
+    properties:
+      created_at:
+        type: string
+      customer_email:
+        type: string
+      customer_name:
+        description: Thông tin khách hàng
+        type: string
+      customer_phone:
+        type: string
+      id:
+        type: integer
+      notes:
+        type: string
+      shipping_address:
+        type: string
+      total_amount:
+        type: number
+      updated_at:
+        type: string
+    type: object
+  model.OrderItem:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      order:
+        allOf:
+        - $ref: '#/definitions/model.Order'
+        description: Relations
+      order_id:
+        type: integer
+      price:
+        type: number
+      product:
+        $ref: '#/definitions/model.Product'
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.OrderItemCreate:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+    type: object
+  model.OrderItemUpdate:
+    properties:
+      price:
+        type: number
+      quantity:
+        type: integer
+    type: object
+  model.OrderStatus:
+    enum:
+    - pending
+    - confirmed
+    - completed
+    - cancelled
+    type: string
+    x-enum-comments:
+      OrderStatusCancelled: Đã hủy
+      OrderStatusCompleted: Hoàn thành
+      OrderStatusConfirmed: Đã xác nhận
+      OrderStatusPending: Chờ xử lý
+    x-enum-descriptions:
+    - Chờ xử lý
+    - Đã xác nhận
+    - Hoàn thành
+    - Đã hủy
+    x-enum-varnames:
+    - OrderStatusPending
+    - OrderStatusConfirmed
+    - OrderStatusCompleted
+    - OrderStatusCancelled
+  model.OrderUpdate:
+    properties:
+      completed_at:
+        type: string
+      customer_email:
+        type: string
+      customer_name:
+        type: string
+      customer_phone:
+        type: string
+      notes:
+        type: string
+      processed_at:
+        type: string
+      processed_by:
+        type: integer
+      shipping_address:
+        type: string
+      status:
+        $ref: '#/definitions/model.OrderStatus'
+    type: object
   model.Product:
     properties:
       category_id:
@@ -581,6 +730,496 @@ paths:
       summary: User login
       tags:
       - users
+  /order-items/{id}:
+    delete:
+      consumes:
+      - application/json
+      description: Delete order item from order (only for pending orders)
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Delete order item
+      tags:
+      - order-items
+    get:
+      consumes:
+      - application/json
+      description: Get order item details by ID
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OrderItem'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Get order item by ID
+      tags:
+      - order-items
+    put:
+      consumes:
+      - application/json
+      description: Update order item information (only for pending orders)
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Order item update data
+        in: body
+        name: orderItem
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderItemUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OrderItem'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Update order item
+      tags:
+      - order-items
+  /order-items/{id}/quantity:
+    put:
+      consumes:
+      - application/json
+      description: Update order item quantity (only for pending orders)
+      parameters:
+      - description: Order Item ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Quantity update data
+        in: body
+        name: quantity
+        required: true
+        schema:
+          additionalProperties:
+            type: integer
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OrderItem'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Update order item quantity
+      tags:
+      - order-items
+  /orders:
+    get:
+      consumes:
+      - application/json
+      description: Get list of orders with filtering
+      parameters:
+      - description: Order status (pending, confirmed, completed, cancelled)
+        in: query
+        name: status
+        type: string
+      - description: Processed by user ID
+        in: query
+        name: processed_by
+        type: integer
+      - description: Customer phone number
+        in: query
+        name: customer_phone
+        type: string
+      - description: Order number
+        in: query
+        name: order_number
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.Order'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: List orders
+      tags:
+      - orders
+    post:
+      consumes:
+      - application/json
+      description: Create a new order with customer information and order items
+      parameters:
+      - description: Order information
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Create a new order
+      tags:
+      - orders
+  /orders/{id}:
+    get:
+      consumes:
+      - application/json
+      description: Get order details by order ID
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get order by ID
+      tags:
+      - orders
+    put:
+      consumes:
+      - application/json
+      description: Update order information
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Order update data
+        in: body
+        name: order
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderUpdate'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Update order
+      tags:
+      - orders
+  /orders/{id}/status:
+    put:
+      consumes:
+      - application/json
+      description: Update order status (pending -> confirmed -> completed)
+      parameters:
+      - description: Order ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Status update data
+        in: body
+        name: status
+        required: true
+        schema:
+          additionalProperties: true
+          type: object
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Update order status
+      tags:
+      - orders
+  /orders/{order_id}/items:
+    get:
+      consumes:
+      - application/json
+      description: Get all items in a specific order
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.OrderItem'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: List order items by order ID
+      tags:
+      - order-items
+    post:
+      consumes:
+      - application/json
+      description: Add a new item to an existing order (only for pending orders)
+      parameters:
+      - description: Order item information
+        in: body
+        name: orderItem
+        required: true
+        schema:
+          $ref: '#/definitions/model.OrderItemCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OrderItem'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Add item to order
+      tags:
+      - order-items
+  /orders/number/{order_number}:
+    get:
+      consumes:
+      - application/json
+      description: Get order details by order number
+      parameters:
+      - description: Order Number
+        in: path
+        name: order_number
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.Order'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get order by order number
+      tags:
+      - orders
   /products:
     get:
       consumes:
