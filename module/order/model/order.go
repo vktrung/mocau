@@ -58,7 +58,14 @@ type OrderCreate struct {
 	ShippingAddress string `json:"shipping_address" gorm:"column:shipping_address;type:text;not null"`
 	Notes           string `json:"notes" gorm:"column:notes;type:text"`
 	
-	// Danh sách sản phẩm (sẽ được tạo riêng qua OrderItem APIs)
+	// Danh sách sản phẩm (có thể tạo cùng lúc hoặc tạo riêng)
+	OrderItems []OrderItemCreate `json:"order_items,omitempty" gorm:"-"`
+}
+
+type OrderItemCreate struct {
+	ProductId int     `json:"product_id" binding:"required"`
+	Quantity  int     `json:"quantity" binding:"required,min=1"`
+	Price     float64 `json:"price,omitempty"` // Optional, sẽ lấy giá hiện tại nếu không có
 }
 
 func (OrderCreate) TableName() string {

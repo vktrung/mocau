@@ -4,6 +4,7 @@ import (
 	"context"
 	"mocau-backend/common"
 	"mocau-backend/module/order/model"
+	orderitemmodel "mocau-backend/module/orderitem/model"
 	"time"
 )
 
@@ -35,7 +36,22 @@ func (s *sqlStore) CreateOrder(ctx context.Context, data *model.OrderCreate) err
 		return common.ErrDB(err)
 	}
 
-	// Order items will be created separately through OrderItem APIs
+		// Create order items if provided
+		if len(data.OrderItems) > 0 {
+			for _, item := range data.OrderItems {
+				orderItem := &orderitemmodel.OrderItem{
+					OrderId:   order.Id,
+					ProductId: item.ProductId,
+					Quantity:  item.Quantity,
+					Price:     item.Price,
+				}
+
+				if err := db.Create(orderItem).Error; err != nil {
+					db.Rollback()
+					return common.ErrDB(err)
+				}
+			}
+		}
 
 	return db.Commit().Error
 }

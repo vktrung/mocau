@@ -13,11 +13,11 @@ import (
 
 // CreateOrder godoc
 // @Summary Create a new order
-// @Description Create a new order with customer information and order items
+// @Description Create a new order with customer information and optional order items
 // @Tags orders
 // @Accept json
 // @Produce json
-// @Param order body model.OrderCreate true "Order information"
+// @Param order body model.OrderCreate true "Order information with optional order items"
 // @Success 201 {object} common.Response{data=model.Order}
 // @Failure 400 {object} common.Response
 // @Failure 500 {object} common.Response

@@ -30,6 +30,37 @@ definitions:
     properties:
       data: {}
     type: object
+  mocau-backend_module_order_model.OrderItemCreate:
+    properties:
+      price:
+        description: Optional, sẽ lấy giá hiện tại nếu không có
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - product_id
+    - quantity
+    type: object
+  mocau-backend_module_orderitem_model.OrderItemCreate:
+    properties:
+      created_at:
+        type: string
+      id:
+        type: integer
+      order_id:
+        type: integer
+      price:
+        type: number
+      product_id:
+        type: integer
+      quantity:
+        type: integer
+      updated_at:
+        type: string
+    type: object
   model.Blog:
     properties:
       author_id:
@@ -155,6 +186,11 @@ definitions:
         type: integer
       notes:
         type: string
+      order_items:
+        description: Danh sách sản phẩm (có thể tạo cùng lúc hoặc tạo riêng)
+        items:
+          $ref: '#/definitions/mocau-backend_module_order_model.OrderItemCreate'
+        type: array
       shipping_address:
         type: string
       total_amount:
@@ -178,23 +214,6 @@ definitions:
         type: number
       product:
         $ref: '#/definitions/model.Product'
-      product_id:
-        type: integer
-      quantity:
-        type: integer
-      updated_at:
-        type: string
-    type: object
-  model.OrderItemCreate:
-    properties:
-      created_at:
-        type: string
-      id:
-        type: integer
-      order_id:
-        type: integer
-      price:
-        type: number
       product_id:
         type: integer
       quantity:
@@ -749,6 +768,43 @@ paths:
       summary: User login
       tags:
       - users
+  /order-items:
+    post:
+      consumes:
+      - application/json
+      description: Add a new item to an existing order (only for pending orders)
+      parameters:
+      - description: Order item information
+        in: body
+        name: orderItem
+        required: true
+        schema:
+          $ref: '#/definitions/mocau-backend_module_orderitem_model.OrderItemCreate'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.OrderItem'
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Add item to order
+      tags:
+      - order-items
   /order-items/{id}:
     delete:
       consumes:
@@ -950,6 +1006,39 @@ paths:
       summary: Bulk delete order items
       tags:
       - order-items
+    post:
+      consumes:
+      - application/json
+      description: Add multiple items to an order at once
+      parameters:
+      - description: Order items to create
+        in: body
+        name: items
+        required: true
+        schema:
+          items:
+            $ref: '#/definitions/mocau-backend_module_orderitem_model.OrderItemCreate'
+          type: array
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/common.Response'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: Bulk create order items
+      tags:
+      - order-items
     put:
       consumes:
       - application/json
@@ -981,6 +1070,44 @@ paths:
       security:
       - BearerAuth: []
       summary: Bulk update order items
+      tags:
+      - order-items
+  /order-items/order/{order_id}:
+    get:
+      consumes:
+      - application/json
+      description: Get all items in a specific order
+      parameters:
+      - description: Order ID
+        in: path
+        name: order_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.OrderItem'
+                  type: array
+              type: object
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/common.Response'
+      security:
+      - BearerAuth: []
+      summary: List order items by order ID
       tags:
       - order-items
   /orders:
@@ -1033,9 +1160,10 @@ paths:
     post:
       consumes:
       - application/json
-      description: Create a new order with customer information and order items
+      description: Create a new order with customer information and optional order
+        items
       parameters:
-      - description: Order information
+      - description: Order information with optional order items
         in: body
         name: order
         required: true
@@ -1228,119 +1356,6 @@ paths:
       summary: Update order status
       tags:
       - orders
-  /orders/{order_id}/items:
-    get:
-      consumes:
-      - application/json
-      description: Get all items in a specific order
-      parameters:
-      - description: Order ID
-        in: path
-        name: order_id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.Response'
-            - properties:
-                data:
-                  items:
-                    $ref: '#/definitions/model.OrderItem'
-                  type: array
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/common.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/common.Response'
-      security:
-      - BearerAuth: []
-      summary: List order items by order ID
-      tags:
-      - order-items
-    post:
-      consumes:
-      - application/json
-      description: Add a new item to an existing order (only for pending orders)
-      parameters:
-      - description: Order item information
-        in: body
-        name: orderItem
-        required: true
-        schema:
-          $ref: '#/definitions/model.OrderItemCreate'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            allOf:
-            - $ref: '#/definitions/common.Response'
-            - properties:
-                data:
-                  $ref: '#/definitions/model.OrderItem'
-              type: object
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/common.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/common.Response'
-      security:
-      - BearerAuth: []
-      summary: Add item to order
-      tags:
-      - order-items
-  /orders/{order_id}/items/bulk:
-    post:
-      consumes:
-      - application/json
-      description: Add multiple items to an order at once
-      parameters:
-      - description: Order ID
-        in: path
-        name: order_id
-        required: true
-        type: integer
-      - description: Order items to create
-        in: body
-        name: items
-        required: true
-        schema:
-          items:
-            $ref: '#/definitions/model.OrderItemCreate'
-          type: array
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/common.Response'
-        "400":
-          description: Bad Request
-          schema:
-            $ref: '#/definitions/common.Response'
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/common.Response'
-      security:
-      - BearerAuth: []
-      summary: Bulk create order items
-      tags:
-      - order-items
   /orders/number/{order_number}:
     get:
       consumes:

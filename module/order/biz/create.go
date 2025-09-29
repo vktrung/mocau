@@ -7,6 +7,7 @@ import (
 	"mocau-backend/common"
 	"mocau-backend/module/order/model"
 	"mocau-backend/module/order/storage"
+	productmodel "mocau-backend/module/product/model"
 )
 
 type CreateOrderStorage interface {
@@ -35,10 +36,38 @@ func (biz *createOrderBusiness) CreateOrder(ctx context.Context, data *model.Ord
 		return ErrShippingAddressRequired
 	}
 
-	// 2. Set initial total amount (will be calculated when items are added)
-	data.TotalAmount = 0
+	// 2. Validate and calculate total amount from order items
+	totalAmount := 0.0
+	if len(data.OrderItems) > 0 {
+		for i, item := range data.OrderItems {
+			if item.ProductId <= 0 {
+				return ErrInvalidProductId
+			}
+			if item.Quantity <= 0 {
+				return ErrInvalidQuantity
+			}
 
-	// 3. Create order through storage
+			// Check product exists and get current price
+			var product productmodel.Product
+			if err := biz.store.GetDB().Where("id = ?", item.ProductId).First(&product).Error; err != nil {
+				return ErrProductNotFound
+			}
+
+			// Check stock availability
+			if product.Stock < item.Quantity {
+				return ErrInsufficientStock
+			}
+
+			// Use current product price
+			data.OrderItems[i].Price = product.Price
+			totalAmount += product.Price * float64(item.Quantity)
+		}
+	}
+
+	// 3. Set calculated total amount
+	data.TotalAmount = totalAmount
+
+	// 4. Create order through storage
 	store := storage.NewSQLStore(biz.store.GetDB())
 	return store.CreateOrder(ctx, data)
 }
