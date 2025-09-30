@@ -63,7 +63,7 @@ func UpdateOrder(db *gorm.DB) gin.HandlerFunc {
 // @Accept json
 // @Produce json
 // @Param id path int true "Order ID"
-// @Param status body map[string]interface{} true "Status update data"
+// @Param status body object{status=string} true "Status update data"
 // @Success 200 {object} common.Response{data=model.Order}
 // @Failure 400 {object} common.Response
 // @Failure 404 {object} common.Response
@@ -78,8 +78,7 @@ func UpdateOrderStatus(db *gorm.DB) gin.HandlerFunc {
 		}
 
 		var request struct {
-			Status      model.OrderStatus `json:"status" binding:"required"`
-			ProcessedBy *int              `json:"processed_by"`
+			Status model.OrderStatus `json:"status" binding:"required"`
 		}
 
 		if err := c.ShouldBindJSON(&request); err != nil {
@@ -89,7 +88,7 @@ func UpdateOrderStatus(db *gorm.DB) gin.HandlerFunc {
 		store := storage.NewSQLStore(db)
 		business := biz.NewUpdateOrderBusiness(store)
 
-		if err := business.UpdateOrderStatus(c.Request.Context(), id, request.Status, request.ProcessedBy); err != nil {
+		if err := business.UpdateOrderStatus(c.Request.Context(), id, request.Status, nil); err != nil {
 			panic(err)
 		}
 

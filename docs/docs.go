@@ -1755,7 +1755,11 @@ const docTemplate = `{
                         "required": true,
                         "schema": {
                             "type": "object",
-                            "additionalProperties": true
+                            "properties": {
+                                "status": {
+                                    "type": "string"
+                                }
+                            }
                         }
                     }
                 ],

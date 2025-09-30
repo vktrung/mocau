@@ -1329,7 +1329,9 @@ paths:
         name: status
         required: true
         schema:
-          additionalProperties: true
+          properties:
+            status:
+              type: string
           type: object
       produces:
       - application/json
