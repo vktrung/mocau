@@ -18,6 +18,7 @@ import (
 // @Tags orders
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param id path int true "Order ID"
 // @Success 200 {object} common.Response{data=model.Order}
 // @Failure 400 {object} common.Response
@@ -49,6 +50,7 @@ func GetOrder(db *gorm.DB) gin.HandlerFunc {
 // @Tags orders
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param order_number path string true "Order Number"
 // @Success 200 {object} common.Response{data=model.Order}
 // @Failure 400 {object} common.Response
