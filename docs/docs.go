@@ -1181,6 +1181,11 @@ const docTemplate = `{
         },
         "/orders": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get list of orders with filtering",
                 "consumes": [
                     "application/json"
@@ -1313,6 +1318,11 @@ const docTemplate = `{
         },
         "/orders/number/{order_number}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get order details by order number",
                 "consumes": [
                     "application/json"
@@ -1520,6 +1530,11 @@ const docTemplate = `{
         },
         "/orders/{id}": {
             "get": {
+                "security": [
+                    {
+                        "BearerAuth": []
+                    }
+                ],
                 "description": "Get order details by order ID",
                 "consumes": [
                     "application/json"
