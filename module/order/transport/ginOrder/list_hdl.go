@@ -17,6 +17,7 @@ import (
 // @Tags orders
 // @Accept json
 // @Produce json
+// @Security BearerAuth
 // @Param status query string false "Order status (pending, confirmed, completed, cancelled)"
 // @Param processed_by query int false "Processed by user ID"
 // @Param customer_phone query string false "Customer phone number"
