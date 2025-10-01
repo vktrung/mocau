@@ -61,7 +61,18 @@ func (biz *createOrderItemBusiness) CreateOrderItem(ctx context.Context, data *m
 
 	// 4. Create order item through storage
 	store := storage.NewSQLStore(biz.store.GetDB())
-	return store.CreateOrderItem(ctx, data)
+	if err := store.CreateOrderItem(ctx, data); err != nil {
+		return err
+	}
+
+	// 5. Deduct stock from product
+	if err := biz.store.GetDB().Model(&productmodel.Product{}).
+		Where("id = ?", data.ProductId).
+		Update("stock", product.Stock-data.Quantity).Error; err != nil {
+		return common.ErrDB(err)
+	}
+
+	return nil
 }
 
 // Business Rule Errors

@@ -69,7 +69,27 @@ func (biz *createOrderBusiness) CreateOrder(ctx context.Context, data *model.Ord
 
 	// 4. Create order through storage
 	store := storage.NewSQLStore(biz.store.GetDB())
-	return store.CreateOrder(ctx, data)
+	if err := store.CreateOrder(ctx, data); err != nil {
+		return err
+	}
+
+	// 5. Deduct stock from products if order items exist
+	if len(data.OrderItems) > 0 {
+		for _, item := range data.OrderItems {
+			var product productmodel.Product
+			if err := biz.store.GetDB().Where("id = ?", item.ProductId).First(&product).Error; err != nil {
+				return common.ErrDB(err)
+			}
+
+			if err := biz.store.GetDB().Model(&productmodel.Product{}).
+				Where("id = ?", item.ProductId).
+				Update("stock", product.Stock-item.Quantity).Error; err != nil {
+				return common.ErrDB(err)
+			}
+		}
+	}
+
+	return nil
 }
 
 // Business Rule Errors
