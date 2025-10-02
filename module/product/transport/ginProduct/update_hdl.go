@@ -90,10 +90,13 @@ func UpdateProduct(db *gorm.DB) func(*gin.Context) {
         }
 
         // Xử lý upload ảnh nếu có (chỉ khi cần thiết)
-        if img, err := upload.UploadImage(c, "image"); err != nil {
-            panic(common.ErrInvalidRequest(err))
-        } else if img != nil {
-            data.Image = img
+        if _, err := c.FormFile("image"); err == nil {
+            // Chỉ xử lý upload khi có file image được gửi lên
+            if img, err := upload.UploadImage(c, "image"); err != nil {
+                panic(common.ErrInvalidRequest(err))
+            } else if img != nil {
+                data.Image = img
+            }
         }
 
         // Kiểm tra xem có ít nhất một field được update không
