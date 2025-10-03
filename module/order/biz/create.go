@@ -74,7 +74,8 @@ func (biz *createOrderBusiness) CreateOrder(ctx context.Context, data *model.Ord
 
 	// 4. Create order through storage
 	store := storage.NewSQLStore(biz.store.GetDB())
-	if err := store.CreateOrder(ctx, data); err != nil {
+	createdOrder, err := store.CreateOrder(ctx, data)
+	if err != nil {
 		return err
 	}
 
@@ -101,7 +102,7 @@ func (biz *createOrderBusiness) CreateOrder(ctx context.Context, data *model.Ord
 			if err := biz.emailService.SendOrderConfirmationEmail(
 				data.CustomerEmail,
 				data.CustomerName,
-				data.OrderNumber,
+				createdOrder.OrderNumber,
 				data.TotalAmount,
 			); err != nil {
 				// Log error but don't fail the order creation

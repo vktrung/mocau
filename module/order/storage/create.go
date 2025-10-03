@@ -8,7 +8,7 @@ import (
 	"time"
 )
 
-func (s *sqlStore) CreateOrder(ctx context.Context, data *model.OrderCreate) error {
+func (s *sqlStore) CreateOrder(ctx context.Context, data *model.OrderCreate) (*model.Order, error) {
 	db := s.db.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -33,7 +33,7 @@ func (s *sqlStore) CreateOrder(ctx context.Context, data *model.OrderCreate) err
 
 	if err := db.Create(order).Error; err != nil {
 		db.Rollback()
-		return common.ErrDB(err)
+		return nil, common.ErrDB(err)
 	}
 
 		// Create order items if provided
@@ -48,12 +48,16 @@ func (s *sqlStore) CreateOrder(ctx context.Context, data *model.OrderCreate) err
 
 				if err := db.Create(orderItem).Error; err != nil {
 					db.Rollback()
-					return common.ErrDB(err)
+					return nil, common.ErrDB(err)
 				}
 			}
 		}
 
-	return db.Commit().Error
+	if err := db.Commit().Error; err != nil {
+		return nil, err
+	}
+	
+	return order, nil
 }
 
 func (s *sqlStore) generateOrderNumber() string {
@@ -61,3 +65,4 @@ func (s *sqlStore) generateOrderNumber() string {
 	timestamp := time.Now().Format("20060102150405")
 	return "ORD" + timestamp
 }
+
