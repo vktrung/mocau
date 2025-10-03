@@ -3,14 +3,17 @@ package biz
 import (
 	"context"
 	"mocau-backend/module/product/model"
-	"mocau-backend/module/product/storage"
 )
 
-type topSellingBusiness struct {
-	store storage.Store
+type TopSellingStorage interface {
+	GetTopSellingProducts(ctx context.Context, limit int) ([]model.TopSellingProduct, error)
 }
 
-func NewTopSellingBusiness(store storage.Store) *topSellingBusiness {
+type topSellingBusiness struct {
+	store TopSellingStorage
+}
+
+func NewTopSellingBusiness(store TopSellingStorage) *topSellingBusiness {
 	return &topSellingBusiness{store: store}
 }
 
