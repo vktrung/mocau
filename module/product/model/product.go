@@ -36,3 +36,11 @@ type ProductUpdate struct {
 }
 
 func (ProductUpdate) TableName() string { return Product{}.TableName() }
+
+type TopSellingProduct struct {
+	ProductId   int           `json:"product_id"`
+	ProductName string        `json:"product_name"`
+	TotalSold   int           `json:"total_sold"`
+	TotalRevenue float64      `json:"total_revenue"`
+	Image       *common.Image `json:"image"`
+}

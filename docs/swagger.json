@@ -1920,6 +1920,66 @@
                 }
             }
         },
+        "/products/top-selling": {
+            "get": {
+                "description": "Get top best selling products of current month based on completed orders. Returns products sorted by total quantity sold.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get top selling products",
+                "parameters": [
+                    {
+                        "maximum": 20,
+                        "minimum": 1,
+                        "type": "integer",
+                        "description": "Number of products to return (default: 5, max: 20)",
+                        "name": "limit",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved top selling products",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/model.TopSellingProduct"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "400": {
+                        "description": "Invalid request parameters",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/products/{id}": {
             "get": {
                 "description": "Retrieve product details by ID",
@@ -2794,6 +2854,26 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "model.TopSellingProduct": {
+            "type": "object",
+            "properties": {
+                "image": {
+                    "$ref": "#/definitions/common.Image"
+                },
+                "product_id": {
+                    "type": "integer"
+                },
+                "product_name": {
+                    "type": "string"
+                },
+                "total_revenue": {
+                    "type": "number"
+                },
+                "total_sold": {
+                    "type": "integer"
                 }
             }
         },

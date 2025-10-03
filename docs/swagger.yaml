@@ -292,6 +292,19 @@ definitions:
       updated_at:
         type: string
     type: object
+  model.TopSellingProduct:
+    properties:
+      image:
+        $ref: '#/definitions/common.Image'
+      product_id:
+        type: integer
+      product_name:
+        type: string
+      total_revenue:
+        type: number
+      total_sold:
+        type: integer
+    type: object
   model.User:
     properties:
       created_at:
@@ -1648,6 +1661,44 @@ paths:
       security:
       - BearerAuth: []
       summary: Update a product by ID
+      tags:
+      - products
+  /products/top-selling:
+    get:
+      consumes:
+      - application/json
+      description: Get top best selling products of current month based on completed
+        orders. Returns products sorted by total quantity sold.
+      parameters:
+      - description: 'Number of products to return (default: 5, max: 20)'
+        in: query
+        maximum: 20
+        minimum: 1
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved top selling products
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/model.TopSellingProduct'
+                  type: array
+              type: object
+        "400":
+          description: Invalid request parameters
+          schema:
+            $ref: '#/definitions/common.Response'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get top selling products
       tags:
       - products
   /profile:
