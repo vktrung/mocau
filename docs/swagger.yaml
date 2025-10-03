@@ -292,6 +292,29 @@ definitions:
       updated_at:
         type: string
     type: object
+  model.RevenueGrowth:
+    properties:
+      current_month:
+        description: Revenue of current month (VND)
+        example: 50000000
+        type: number
+      growth_amount:
+        description: Absolute growth amount (VND)
+        example: 10000000
+        type: number
+      growth_direction:
+        description: '"up", "down", or "stable"'
+        example: up
+        type: string
+      growth_rate:
+        description: Growth rate percentage
+        example: 25
+        type: number
+      previous_month:
+        description: Revenue of previous month (VND)
+        example: 40000000
+        type: number
+    type: object
   model.TopSellingProduct:
     properties:
       image:
@@ -1661,6 +1684,31 @@ paths:
       security:
       - BearerAuth: []
       summary: Update a product by ID
+      tags:
+      - products
+  /products/revenue-growth:
+    get:
+      consumes:
+      - application/json
+      description: Get revenue growth comparison between current month and previous
+        month based on completed orders
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Successfully retrieved revenue growth statistics
+          schema:
+            allOf:
+            - $ref: '#/definitions/common.Response'
+            - properties:
+                data:
+                  $ref: '#/definitions/model.RevenueGrowth'
+              type: object
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/common.Response'
+      summary: Get revenue growth statistics
       tags:
       - products
   /products/top-selling:

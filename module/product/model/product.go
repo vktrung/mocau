@@ -44,3 +44,12 @@ type TopSellingProduct struct {
 	TotalRevenue float64      `json:"total_revenue"`
 	Image       *common.Image `json:"image"`
 }
+
+// RevenueGrowth represents revenue growth statistics
+type RevenueGrowth struct {
+	CurrentMonth    float64 `json:"current_month" example:"50000000"`     // Revenue of current month (VND)
+	PreviousMonth   float64 `json:"previous_month" example:"40000000"`    // Revenue of previous month (VND)
+	GrowthAmount    float64 `json:"growth_amount" example:"10000000"`     // Absolute growth amount (VND)
+	GrowthRate      float64 `json:"growth_rate" example:"25.0"`           // Growth rate percentage
+	GrowthDirection string  `json:"growth_direction" example:"up"`        // "up", "down", or "stable"
+}

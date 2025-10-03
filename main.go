@@ -160,6 +160,7 @@ func main() {
         v1.POST("/products", middleware.RequiredAuth(authStore, tokenProvider), prodGin.CreateProduct(db))
         v1.GET("/products", prodGin.ListProducts(db))
         v1.GET("/products/top-selling", prodGin.GetTopSellingProducts(db))
+        v1.GET("/products/revenue-growth", prodGin.GetRevenueGrowth(db))
         v1.GET("/products/:id", prodGin.GetProduct(db))
         v1.PUT("/products/:id", middleware.RequiredAuth(authStore, tokenProvider), prodGin.UpdateProduct(db))
 

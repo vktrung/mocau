@@ -1920,6 +1920,47 @@
                 }
             }
         },
+        "/products/revenue-growth": {
+            "get": {
+                "description": "Get revenue growth comparison between current month and previous month based on completed orders",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "Get revenue growth statistics",
+                "responses": {
+                    "200": {
+                        "description": "Successfully retrieved revenue growth statistics",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/common.Response"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/model.RevenueGrowth"
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal server error",
+                        "schema": {
+                            "$ref": "#/definitions/common.Response"
+                        }
+                    }
+                }
+            }
+        },
         "/products/top-selling": {
             "get": {
                 "description": "Get top best selling products of current month based on completed orders. Returns products sorted by total quantity sold.",
@@ -2854,6 +2895,36 @@
                 },
                 "updated_at": {
                     "type": "string"
+                }
+            }
+        },
+        "model.RevenueGrowth": {
+            "type": "object",
+            "properties": {
+                "current_month": {
+                    "description": "Revenue of current month (VND)",
+                    "type": "number",
+                    "example": 50000000
+                },
+                "growth_amount": {
+                    "description": "Absolute growth amount (VND)",
+                    "type": "number",
+                    "example": 10000000
+                },
+                "growth_direction": {
+                    "description": "\"up\", \"down\", or \"stable\"",
+                    "type": "string",
+                    "example": "up"
+                },
+                "growth_rate": {
+                    "description": "Growth rate percentage",
+                    "type": "number",
+                    "example": 25
+                },
+                "previous_month": {
+                    "description": "Revenue of previous month (VND)",
+                    "type": "number",
+                    "example": 40000000
                 }
             }
         },
