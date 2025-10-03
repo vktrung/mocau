@@ -24,6 +24,11 @@ jobs:
           echo "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" >> .env
           echo "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" >> .env
           echo "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" >> .env
+          echo "SMTP_HOST=smtp.gmail.com" >> .env
+          echo "SMTP_PORT=587" >> .env
+          echo "SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}" >> .env
+          echo "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" >> .env
+          echo "SMTP_FROM=${{ secrets.SMTP_USERNAME }}" >> .env
           echo "GIN_MODE=release" >> .env
           echo "PORT=3000" >> .env
           echo "MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}" >> .env
@@ -67,6 +72,11 @@ jobs:
             -e "CLOUDINARY_CLOUD_NAME=${{ secrets.CLOUDINARY_CLOUD_NAME }}" \
             -e "CLOUDINARY_API_KEY=${{ secrets.CLOUDINARY_API_KEY }}" \
             -e "CLOUDINARY_API_SECRET=${{ secrets.CLOUDINARY_API_SECRET }}" \
+            -e "SMTP_HOST=smtp.gmail.com" \
+            -e "SMTP_PORT=587" \
+            -e "SMTP_USERNAME=${{ secrets.SMTP_USERNAME }}" \
+            -e "SMTP_PASSWORD=${{ secrets.SMTP_PASSWORD }}" \
+            -e "SMTP_FROM=${{ secrets.SMTP_USERNAME }}" \
             -e "GIN_MODE=release" \
             -e "PORT=3000" \
             -p 3000:3000 \

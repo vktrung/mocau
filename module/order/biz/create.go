@@ -8,6 +8,7 @@ import (
 	"mocau-backend/module/order/model"
 	"mocau-backend/module/order/storage"
 	productmodel "mocau-backend/module/product/model"
+	"mocau-backend/module/email"
 )
 
 type CreateOrderStorage interface {
@@ -15,11 +16,15 @@ type CreateOrderStorage interface {
 }
 
 type createOrderBusiness struct {
-	store CreateOrderStorage
+	store        CreateOrderStorage
+	emailService *email.EmailService
 }
 
 func NewCreateOrderBusiness(store CreateOrderStorage) *createOrderBusiness {
-	return &createOrderBusiness{store: store}
+	return &createOrderBusiness{
+		store:        store,
+		emailService: email.NewEmailService(),
+	}
 }
 
 func (biz *createOrderBusiness) CreateOrder(ctx context.Context, data *model.OrderCreate) error {
@@ -87,6 +92,23 @@ func (biz *createOrderBusiness) CreateOrder(ctx context.Context, data *model.Ord
 				return common.ErrDB(err)
 			}
 		}
+	}
+
+	// 6. Send confirmation email to customer (if email is provided)
+	if data.CustomerEmail != "" {
+		// Send email asynchronously to avoid blocking the main flow
+		go func() {
+			if err := biz.emailService.SendOrderConfirmationEmail(
+				data.CustomerEmail,
+				data.CustomerName,
+				data.OrderNumber,
+				data.TotalAmount,
+			); err != nil {
+				// Log error but don't fail the order creation
+				// In production, you might want to use a proper logging service
+				// or queue the email for retry
+			}
+		}()
 	}
 
 	return nil
