@@ -116,12 +116,27 @@ func main() {
 	r := gin.Default()
 	r.Use(middleware.Recover())
 
-	// Add CORS middleware
+	// Add CORS middleware - Full CORS support
 	r.Use(func(c *gin.Context) {
+		// Allow all origins
 		c.Header("Access-Control-Allow-Origin", "*")
-		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
-		c.Header("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		
+		// Allow all methods
+		c.Header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH, HEAD")
+		
+		// Allow all headers
+		c.Header("Access-Control-Allow-Headers", "Origin, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization, accept, origin, Cache-Control, X-Requested-With")
+		
+		// Allow credentials
+		c.Header("Access-Control-Allow-Credentials", "true")
+		
+		// Expose headers
+		c.Header("Access-Control-Expose-Headers", "Content-Length, Access-Control-Allow-Origin, Access-Control-Allow-Headers, Content-Type")
+		
+		// Cache preflight for 12 hours
+		c.Header("Access-Control-Max-Age", "43200")
 
+		// Handle preflight requests
 		if c.Request.Method == "OPTIONS" {
 			c.AbortWithStatus(204)
 			return
