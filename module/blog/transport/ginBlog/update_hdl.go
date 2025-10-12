@@ -1,6 +1,7 @@
 package ginBlog
 
 import (
+	"fmt"
 	"mocau-backend/common"
 	"mocau-backend/module/blog/biz"
 	"mocau-backend/module/blog/model"
@@ -41,8 +42,11 @@ func UpdateBlog(db *gorm.DB) func(*gin.Context) {
 		user := c.MustGet(common.CurrentUser)
 		userObj, ok := user.(*userModel.User)
 		if !ok {
-			panic(common.ErrNoPermission(nil))
+			fmt.Printf("DEBUG: Failed to cast user from context. User type: %T, Value: %+v\n", user, user)
+			panic(common.ErrNoPermission(common.NewCustomError(nil, "Invalid user data in context", "ErrInvalidUserContext")))
 		}
+		
+		fmt.Printf("DEBUG: Current user ID: %d\n", userObj.Id)
 
 		// Kiểm tra quyền sở hữu blog
 		store := storage.NewSQLStore(db)
@@ -55,8 +59,9 @@ func UpdateBlog(db *gorm.DB) func(*gin.Context) {
 		}
 
 		// Chỉ cho phép tác giả chỉnh sửa blog của mình
+		fmt.Printf("DEBUG: Blog author ID: %d, Current user ID: %d\n", currentBlog.AuthorId, userObj.Id)
 		if currentBlog.AuthorId != userObj.Id {
-			panic(common.ErrNoPermission(nil))
+			panic(common.ErrNoPermission(common.NewCustomError(nil, "You can only update your own blog", "ErrNotBlogAuthor")))
 		}
 
 		var data model.BlogUpdate
