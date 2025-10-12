@@ -68,6 +68,7 @@ func main() {
 	}
 	docs.SwaggerInfo.Host = swaggerHost
 	docs.SwaggerInfo.BasePath = "/v1"
+	docs.SwaggerInfo.Schemes = []string{"https"}
 
 	dsn := os.Getenv("DB_CONN")
 	systemSecret := os.Getenv("SECRET")
