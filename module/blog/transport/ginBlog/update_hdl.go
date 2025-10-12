@@ -78,11 +78,17 @@ func UpdateBlog(db *gorm.DB) func(*gin.Context) {
 		}
 
 		// Xử lý upload ảnh nếu có
-		if img, err := upload.UploadImage(c, "image"); err != nil {
-			panic(common.ErrInvalidRequest(err))
-		} else if img != nil {
-			data.Image = img
+		// Chỉ upload ảnh nếu có file được gửi lên
+		if fileHeader, err := c.FormFile("image"); err == nil && fileHeader != nil {
+			// Có file ảnh được upload, thực hiện upload
+			if img, err := upload.UploadImage(c, "image"); err != nil {
+				panic(common.ErrInvalidRequest(err))
+			} else if img != nil {
+				data.Image = img
+			}
 		}
+		// Nếu không có file ảnh được upload, data.Image sẽ là nil
+		// và storage sẽ không update trường image (giữ nguyên ảnh cũ)
 
 		b := biz.NewUpdateBusiness(store)
 		if err := b.UpdateBlog(c.Request.Context(), id, &data); err != nil {
