@@ -8,8 +8,7 @@ import (
 )
 
 func (s *sqlStore) DeleteBlog(ctx context.Context, id int) error {
-	now := time.Now()
-	if err := s.db.Table(model.Blog{}.TableName()).Where("id = ?", id).Update("deleted_at", &now).Error; err != nil {
+	if err := s.db.Table(model.Blog{}.TableName()).Where("id = ?", id).Delete(nil).Error; err != nil {
 		return common.ErrDB(err)
 	}
 	return nil
