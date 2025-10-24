@@ -161,36 +161,10 @@ func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, o
 					</div>
 
 					<!-- Contact Info -->
-					<div style="background: linear-gradient(135deg, #4d8540 0%%, #3e6934 100%%); color: white; padding: 30px; margin: 30px 0; border-radius: 15px; text-align: center; position: relative; overflow: hidden;">
-						<!-- Decorative elements -->
-						<div style="position: absolute; top: -20px; right: -20px; width: 80px; height: 80px; background: rgba(255,255,255,0.05); border-radius: 50%%; transform: rotate(45deg);"></div>
-						<div style="position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.03); border-radius: 50%%;"></div>
-
-						<h4 style="margin: 0 0 25px 0; font-size: 20px; font-weight: 700; position: relative; z-index: 1;">
-							<span style="background: linear-gradient(90deg, #e8c04f, #f0d67d); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">🌟</span>
-							Thông tin liên hệ
-						</h4>
-
-						<div style="display: flex; justify-content: center; flex-wrap: wrap; gap: 40px; position: relative; z-index: 1;">
-							<div style="text-align: center; min-width: 140px;">
-								<div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%%, rgba(255, 255, 255, 0.1) 100%%); width: 50px; height: 50px; margin: 0 auto 15px; border-radius: 50%%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3);">
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-										<path d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-										<polyline points="22,6 12,13 2,6" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-									</svg>
-								</div>
-								<p style="margin: 0; font-size: 14px; font-weight: 600; line-height: 1.4;">ecocauviet@gmail.com</p>
-							</div>
-
-							<div style="text-align: center; min-width: 140px;">
-								<div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%%, rgba(255, 255, 255, 0.1) 100%%); width: 50px; height: 50px; margin: 0 auto 15px; border-radius: 50%%; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.3);">
-									<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-										<path d="M22 16.92V19.92C22 20.52 21.52 21 20.92 21C10.36 21 2 12.64 2 2.08C2 1.48 2.48 1 3.08 1H6.08C6.68 1 7.16 1.48 7.16 2.08C7.16 3.68 7.44 5.24 7.96 6.68C8.08 7 7.96 7.36 7.68 7.64L6.32 9C7.84 12.16 11.84 16.16 15 17.68L16.36 16.32C16.64 16.04 17 15.92 17.32 16.04C18.76 16.56 20.32 16.84 21.92 16.84C22.52 16.84 23 17.32 23 17.92V20.92Z" fill="white"/>
-									</svg>
-								</div>
-								<p style="margin: 0; font-size: 14px; font-weight: 600; line-height: 1.4;">0763484202</p>
-							</div>
-						</div>
+					<div style="padding: 20px; margin: 30px 0; border: 1px solid #e8e4db; border-radius: 12px; background-color: #ffffff;">
+						<h4 style="margin: 0 0 15px 0; font-size: 18px; font-weight: 700; color: #2b4626;">Thông tin liên hệ</h4>
+						<p style="margin: 0 0 8px 0; color: #5e4939; font-size: 15px;">Email: ecocauviet@gmail.com</p>
+						<p style="margin: 0; color: #5e4939; font-size: 15px;">Hotline: 0763484202</p>
 					</div>
 
 					<!-- Thank you note -->
