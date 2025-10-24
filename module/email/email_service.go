@@ -81,127 +81,378 @@ func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, o
     style="
       margin: 0;
       padding: 0;
-      background: #f5f7f4;
       font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+      background-color: #faf9f7;
       color: #2b4626;
     "
   >
-    <div style="max-width: 620px; margin: 0 auto; background: #ffffff">
-      <!-- Header -->
+    <div
+      style="
+        max-width: 650px;
+        margin: 0 auto;
+        background-color: #ffffff;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+      "
+    >
+      <!-- Header với branding -->
       <div
         style="
-          padding: 36px 30px;
+          background: linear-gradient(135deg, #65a354 0%, #4d8540 100%);
+          padding: 40px 30px;
           text-align: center;
-          background: linear-gradient(135deg, #66a355 0%, #4c7f3f 100%);
-          color: #ffffff;
+          border-radius: 0;
+          position: relative;
+          overflow: hidden;
         "
       >
-        <div style="display: inline-flex; align-items: center; gap: 12px; margin-bottom: 12px">
-          <div
-            style="
-              width: 44px;
-              height: 44px;
-              border-radius: 50%;
-              background: rgba(255, 255, 255, 0.18);
-              display: flex;
-              align-items: center;
-              justify-content: center;
-              font-weight: 700;
-              font-size: 18px;
-            "
-          >
-            E
+        <!-- Decorative SVG Pattern -->
+        <svg
+          style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.1"
+          viewBox="0 0 100 100"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <defs>
+            <pattern
+              id="leaf-pattern"
+              x="0"
+              y="0"
+              width="20"
+              height="20"
+              patternUnits="userSpaceOnUse"
+            >
+              <path
+                d="M10 2C12 4 14 6 15 10C14 14 12 16 10 18C8 16 6 14 5 10C6 6 8 4 10 2Z"
+                fill="rgba(255,255,255,0.1)"
+              />
+              <circle cx="10" cy="10" r="1" fill="rgba(255,255,255,0.05)" />
+            </pattern>
+          </defs>
+          <rect width="100" height="100" fill="url(#leaf-pattern)" />
+        </svg>
+
+        <!-- Logo Container -->
+        <div
+          style="
+            background: linear-gradient(
+              135deg,
+              rgba(255, 255, 255, 0.15) 0%,
+              rgba(255, 255, 255, 0.05) 100%
+            );
+            display: inline-block;
+            padding: 20px 30px;
+            border-radius: 30px;
+            margin-bottom: 25px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            position: relative;
+            z-index: 1;
+          "
+        >
+          <!-- EcoCau Logo SVG -->
+          <div style="display: flex; align-items: center; gap: 12px">
+            <svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="16" cy="16" r="15" fill="#ffffff" opacity="0.9" />
+              <path
+                d="M8 20C10 18 12 16 16 16C20 16 22 18 24 20C22 22 20 24 16 24C12 24 10 22 8 20Z"
+                fill="#65a354"
+              />
+              <path
+                d="M12 12C14 10 16 8 16 8C16 8 18 10 20 12C18 14 16 16 16 16C16 16 14 14 12 12Z"
+                fill="#4d8540"
+              />
+              <circle cx="16" cy="16" r="3" fill="#ffffff" />
+              <circle cx="16" cy="16" r="1.5" fill="#65a354" />
+            </svg>
+            <h1
+              style="
+                color: #ffffff;
+                margin: 0;
+                font-size: 28px;
+                font-weight: 700;
+                letter-spacing: 1px;
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+              "
+            >
+              EcoCau
+            </h1>
           </div>
-          <span style="font-size: 28px; font-weight: 700; letter-spacing: 0.5px">EcoCau</span>
         </div>
-        <h1 style="margin: 0; font-size: 22px; font-weight: 600">Xác nhận đơn hàng</h1>
-        <p style="margin: 10px 0 0; font-size: 14px; opacity: 0.9">
-          Cảm ơn bạn đã đồng hành cùng sản phẩm thân thiện với môi trường của chúng tôi.
-        </p>
+
+        <h2
+          style="
+            color: #ffffff;
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+          "
+        >
+          Xác nhận đơn hàng
+        </h2>
+        <div
+          style="
+            background: linear-gradient(
+              90deg,
+              transparent 0%,
+              rgba(255, 255, 255, 0.3) 50%,
+              transparent 100%
+            );
+            height: 2px;
+            width: 120px;
+            margin: 20px auto;
+            border-radius: 1px;
+          "
+        ></div>
       </div>
 
-      <!-- Body -->
-      <div style="padding: 32px 28px 36px">
+      <!-- Content -->
+      <div style="padding: 40px 30px">
         <!-- Greeting -->
-        <p style="margin: 0 0 16px; font-size: 16px; font-weight: 600">
-          Xin chào {{customer_name}},
-        </p>
-        <p style="margin: 0 0 26px; font-size: 15px; line-height: 1.6; color: #476040">
-          Cảm ơn bạn đã đặt hàng tại EcoCau! Đơn hàng của bạn đang được xử lý. Chúng tôi sẽ thông
-          báo ngay khi đơn được chuẩn bị xong để giao đến bạn.
-        </p>
+        <div style="margin-bottom: 30px">
+          <p style="font-size: 18px; color: #2b4626; margin: 0 0 10px 0; font-weight: 600">
+            Xin chào {{customer_name}},
+          </p>
+          <p style="font-size: 16px; color: #5e4939; margin: 0; line-height: 1.6">
+            Cảm ơn bạn đã đặt hàng tại cửa hàng của chúng tôi! Chúng tôi đã nhận được đơn hàng của
+            bạn và đang xử lý.
+          </p>
+        </div>
 
-        <!-- Order summary -->
+        <!-- Order Info Card -->
         <div
           style="
-            border: 1px solid #e3eadf;
-            border-radius: 14px;
-            padding: 22px 24px;
-            margin-bottom: 28px;
-            background: #f9fbf8;
+            background: linear-gradient(135deg, #f6faf5 0%, #eaf5e7 100%);
+            border-left: 5px solid #65a354;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 15px;
+            box-shadow: 0 2px 15px rgba(101, 163, 84, 0.1);
+            position: relative;
+            overflow: hidden;
           "
         >
-          <h2 style="margin: 0 0 18px; font-size: 18px; font-weight: 600; color: #2b4626">
+          <!-- Decorative corner accent -->
+          <div
+            style="
+              position: absolute;
+              top: 0;
+              right: 0;
+              width: 0;
+              height: 0;
+              border-style: solid;
+              border-width: 0 25px 25px 0;
+              border-color: transparent #e8c04f transparent transparent;
+            "
+          ></div>
+
+          <h3
+            style="
+              color: #2b4626;
+              margin: 0 0 20px 0;
+              font-size: 20px;
+              font-weight: 700;
+              display: flex;
+              align-items: center;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #65a354, #4d8540);
+                color: white;
+                padding: 8px 12px;
+                border-radius: 50%;
+                font-size: 14px;
+                margin-right: 15px;
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                text-align: center;
+                line-height: 24px;
+                box-shadow: 0 2px 8px rgba(101, 163, 84, 0.3);
+              "
+              >✓</span
+            >
             Thông tin đơn hàng
-          </h2>
-          <div style="display: flex; flex-wrap: wrap; gap: 18px 24px; font-size: 15px">
-            <div style="flex: 1 1 240px">
-              <div style="text-transform: uppercase; font-size: 12px; color: #829277; margin-bottom: 6px">
+          </h3>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px">
+            <div
+              style="background-color: rgba(255, 255, 255, 0.7); padding: 15px; border-radius: 10px"
+            >
+              <p
+                style="
+                  margin: 0 0 5px 0;
+                  font-size: 14px;
+                  color: #8a7052;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
                 Mã đơn hàng
-              </div>
-              <div style="font-weight: 600; letter-spacing: 0.5px">{{order_number}}</div>
+              </p>
+              <p
+                style="
+                  margin: 0;
+                  font-size: 16px;
+                  color: #2b4626;
+                  font-weight: 700;
+                  font-family: 'Courier', monospace;
+                "
+              >
+                {{order_number}}
+              </p>
             </div>
-            <div style="flex: 1 1 240px">
-              <div style="text-transform: uppercase; font-size: 12px; color: #829277; margin-bottom: 6px">
+            <div
+              style="background-color: rgba(255, 255, 255, 0.7); padding: 15px; border-radius: 10px"
+            >
+              <p
+                style="
+                  margin: 0 0 5px 0;
+                  font-size: 14px;
+                  color: #8a7052;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
                 Tổng tiền
-              </div>
-              <div style="font-weight: 600; color: #4d8540">{{total_amount}} VND</div>
+              </p>
+              <p style="margin: 0; font-size: 18px; color: #65a354; font-weight: 700">
+                {{total_amount}} VND
+              </p>
             </div>
-            <div style="flex: 1 1 240px">
-              <div style="text-transform: uppercase; font-size: 12px; color: #829277; margin-bottom: 6px">
+            <div
+              style="background-color: rgba(255, 255, 255, 0.7); padding: 15px; border-radius: 10px"
+            >
+              <p
+                style="
+                  margin: 0 0 5px 0;
+                  font-size: 14px;
+                  color: #8a7052;
+                  font-weight: 600;
+                  text-transform: uppercase;
+                  letter-spacing: 0.5px;
+                "
+              >
                 Trạng thái
-              </div>
-              <div>
+              </p>
+              <p
+                style="
+                  margin: 0;
+                  font-size: 16px;
+                  color: #e8c04f;
+                  font-weight: 700;
+                  display: flex;
+                  align-items: center;
+                "
+              >
                 <span
                   style="
+                    background-color: #e8c04f;
+                    width: 8px;
+                    height: 8px;
+                    border-radius: 50%;
+                    margin-right: 8px;
                     display: inline-block;
-                    padding: 4px 10px;
-                    border-radius: 999px;
-                    background: rgba(232, 192, 79, 0.16);
-                    color: #b68b2d;
-                    font-weight: 600;
-                    font-size: 13px;
                   "
-                  >Đang xử lý</span
-                >
-              </div>
+                ></span>
+                Đang xử lý
+              </p>
             </div>
+          
           </div>
         </div>
 
-        <!-- Shipping -->
+        <!-- Shipping Info -->
         <div
           style="
-            border: 1px solid #e3eadf;
-            border-radius: 14px;
-            padding: 22px 24px;
-            margin-bottom: 28px;
-            background: #ffffff;
+            background: linear-gradient(135deg, #fefdf6 0%, #f9f3e3 100%);
+            border: 1px solid #f6e8b0;
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
           "
         >
-          <h2 style="margin: 0 0 16px; font-size: 18px; font-weight: 600; color: #2b4626">
+          <!-- Decorative elements -->
+          <div
+            style="
+              position: absolute;
+              top: -10px;
+              left: -10px;
+              width: 60px;
+              height: 60px;
+              background: linear-gradient(45deg, #e8c04f, #f0d67d);
+              opacity: 0.1;
+              border-radius: 50%;
+              transform: rotate(15deg);
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              bottom: -15px;
+              right: -15px;
+              width: 80px;
+              height: 80px;
+              background: linear-gradient(45deg, #d9a233, #e8c04f);
+              opacity: 0.05;
+              border-radius: 50%;
+            "
+          ></div>
+
+          <h3
+            style="
+              color: #784f22;
+              margin: 0 0 20px 0;
+              font-size: 18px;
+              font-weight: 700;
+              display: flex;
+              align-items: center;
+              position: relative;
+              z-index: 1;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(135deg, #e8c04f, #d9a233);
+                color: #784f22;
+                padding: 8px 12px;
+                border-radius: 50%;
+                font-size: 14px;
+                margin-right: 15px;
+                display: inline-block;
+                width: 24px;
+                height: 24px;
+                text-align: center;
+                line-height: 24px;
+                box-shadow: 0 2px 8px rgba(232, 192, 79, 0.3);
+              "
+              >🚚</span
+            >
             Thông tin giao hàng
-          </h2>
-          <div style="font-size: 15px; line-height: 1.7; color: #476040">
-            <p style="margin: 0 0 6px"><strong style="color: #2b4626">Họ tên:</strong> {{shipping_name}}</p>
-            <p style="margin: 0 0 6px">
-              <strong style="color: #2b4626">Điện thoại:</strong> {{shipping_phone}}
+          </h3>
+
+          <div style="line-height: 1.8">
+            <p style="margin: 0 0 8px 0; color: #5e4939">
+              <strong style="color: #784f22; width: 120px; display: inline-block">Họ tên:</strong>
+              {{shipping_name}}
             </p>
-            <p style="margin: 0 0 6px">
-              <strong style="color: #2b4626">Email:</strong> {{customer_email}}
+            <p style="margin: 0 0 8px 0; color: #5e4939">
+              <strong style="color: #784f22; width: 120px; display: inline-block"
+                >Điện thoại:</strong
+              >
+              {{shipping_phone}}
             </p>
-            <p style="margin: 0">
-              <strong style="color: #2b4626">Địa chỉ:</strong> {{shipping_address}}
+            <p style="margin: 0 0 8px 0; color: #5e4939">
+              <strong style="color: #784f22; width: 120px; display: inline-block">Email:</strong>
+              {{customer_email}}
+            </p>
+            <p style="margin: 0; color: #5e4939">
+              <strong style="color: #784f22; width: 120px; display: inline-block">Địa chỉ:</strong>
+              {{shipping_address}}
             </p>
           </div>
         </div>
@@ -209,64 +460,222 @@ func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, o
         <!-- Message -->
         <div
           style="
-            border-radius: 14px;
-            padding: 22px 24px;
-            background: #f1f5ef;
-            border: 1px solid #e1e8e0;
-            margin-bottom: 30px;
+            background: linear-gradient(135deg, #faf9f7 0%, #f3f1ed 100%);
+            padding: 25px;
+            margin: 30px 0;
+            border-radius: 15px;
+            border: 1px solid #e8e4db;
+            position: relative;
+            overflow: hidden;
           "
         >
-          <p style="margin: 0 0 12px; font-size: 15px; color: #2b4626; line-height: 1.7">
-            <strong>Nhắc bạn một chút:</strong> đội ngũ EcoCau sẽ xử lý đơn hàng của bạn trong thời
-            gian sớm nhất. Bạn sẽ nhận thêm email khi đơn được chuẩn bị và giao cho đơn vị vận
-            chuyển.
-          </p>
-          <p style="margin: 0; font-size: 14px; color: #5f715d; line-height: 1.6">
-            Nếu cần hỗ trợ hoặc muốn thay đổi/hủy đơn hàng, bạn chỉ cần trả lời lại email này hoặc
-            liên hệ với chúng tôi qua thông tin bên dưới.
-          </p>
+          <!-- Decorative wave pattern -->
+          <div
+            style="
+              position: absolute;
+              top: 0;
+              left: 0;
+              width: 100%;
+              height: 4px;
+              background: linear-gradient(90deg, #65a354, #e8c04f, #d9a233, #65a354);
+              opacity: 0.7;
+            "
+          ></div>
+
+          <div style="position: relative; z-index: 1">
+            <p style="margin: 0 0 15px 0; color: #2b4626; font-size: 16px; line-height: 1.7">
+              <strong style="color: #65a354"
+                >Chúng tôi sẽ xử lý đơn hàng của bạn trong thời gian sớm nhất.</strong
+              >
+              Bạn sẽ nhận được thông báo qua email khi đơn hàng được chuẩn bị và giao.
+            </p>
+            <p style="margin: 0; color: #5e4939; font-size: 15px; line-height: 1.6">
+              Nếu bạn có bất kỳ câu hỏi nào về đơn hàng, vui lòng liên hệ với chúng tôi qua email
+              hoặc số điện thoại bên dưới.
+            </p>
+          </div>
         </div>
 
-        <!-- Contact -->
+        <!-- Contact Info -->
         <div
           style="
-            border-radius: 14px;
-            padding: 20px 24px;
-            background: #ffffff;
-            border: 1px solid #e3eadf;
-            margin-bottom: 32px;
+            background: linear-gradient(135deg, #4d8540 0%, #3e6934 100%);
+            color: white;
+            padding: 30px;
+            margin: 30px 0;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
           "
         >
-          <h3 style="margin: 0 0 14px; font-size: 16px; font-weight: 600; color: #2b4626">
+          <!-- Decorative elements -->
+          <div
+            style="
+              position: absolute;
+              top: -20px;
+              right: -20px;
+              width: 80px;
+              height: 80px;
+              background: rgba(255, 255, 255, 0.05);
+              border-radius: 50%;
+              transform: rotate(45deg);
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              bottom: -30px;
+              left: -30px;
+              width: 100px;
+              height: 100px;
+              background: rgba(255, 255, 255, 0.03);
+              border-radius: 50%;
+            "
+          ></div>
+
+          <h4
+            style="
+              margin: 0 0 25px 0;
+              font-size: 20px;
+              font-weight: 700;
+              position: relative;
+              z-index: 1;
+            "
+          >
+            <span
+              style="
+                background: linear-gradient(90deg, #e8c04f, #f0d67d);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+              "
+              >🌟</span
+            >
             Thông tin liên hệ
-          </h3>
-          <div style="display: flex; flex-wrap: wrap; gap: 12px 24px; font-size: 14px; color: #476040">
-            <div style="flex: 1 1 220px">
-              <div style="font-weight: 600; color: #2b4626">Email</div>
-              <div>ecocauviet@gmail.com</div>
+          </h4>
+
+          <div
+            style="
+              display: flex;
+              justify-content: center;
+              flex-wrap: wrap;
+              gap: 40px;
+              position: relative;
+              z-index: 1;
+            "
+          >
+            <div style="text-align: center; min-width: 140px">
+              <div
+                style="
+                  background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    rgba(255, 255, 255, 0.1) 100%
+                  );
+                  width: 50px;
+                  height: 50px;
+                  margin: 0 auto 15px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  backdrop-filter: blur(10px);
+                  border: 1px solid rgba(255, 255, 255, 0.3);
+                "
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <polyline
+                    points="22,6 12,13 2,6"
+                    stroke="white"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </div>
+              <p style="margin: 0; font-size: 14px; font-weight: 600; line-height: 1.4">
+                ecocauviet@gmail.com
+              </p>
             </div>
-            <div style="flex: 1 1 220px">
-              <div style="font-weight: 600; color: #2b4626">Hotline</div>
-              <div>076 348 4202</div>
+
+            <div style="text-align: center; min-width: 140px">
+              <div
+                style="
+                  background: linear-gradient(
+                    135deg,
+                    rgba(255, 255, 255, 0.2) 0%,
+                    rgba(255, 255, 255, 0.1) 100%
+                  );
+                  width: 50px;
+                  height: 50px;
+                  margin: 0 auto 15px;
+                  border-radius: 50%;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  backdrop-filter: blur(10px);
+                  border: 1px solid rgba(255, 255, 255, 0.3);
+                "
+              >
+                <svg
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M22 16.92V19.92C22 20.52 21.52 21 20.92 21C10.36 21 2 12.64 2 2.08C2 1.48 2.48 1 3.08 1H6.08C6.68 1 7.16 1.48 7.16 2.08C7.16 3.68 7.44 5.24 7.96 6.68C8.08 7 7.96 7.36 7.68 7.64L6.32 9C7.84 12.16 11.84 16.16 15 17.68L16.36 16.32C16.64 16.04 17 15.92 17.32 16.04C18.76 16.56 20.32 16.84 21.92 16.84C22.52 16.84 23 17.32 23 17.92V20.92Z"
+                    fill="white"
+                  />
+                </svg>
+              </div>
+              <p style="margin: 0; font-size: 14px; font-weight: 600; line-height: 1.4">
+                0763484202
+              </p>
             </div>
           </div>
         </div>
 
-        <div style="text-align: center">
-          <p style="margin: 0 0 10px; font-size: 16px; font-weight: 600">Trân trọng cảm ơn!</p>
-          <p style="margin: 0; font-size: 15px; color: #4d8540; font-weight: 600">
+        <!-- Thank you note -->
+        <div style="text-align: center; padding: 20px 0">
+          <p style="margin: 0 0 15px 0; color: #2b4626; font-size: 18px; font-weight: 600">
+            Trân trọng cảm ơn!
+          </p>
+          <p style="margin: 0; color: #65a354; font-size: 16px; font-weight: 700">
             Đội ngũ EcoCau Store
           </p>
         </div>
       </div>
 
       <!-- Footer -->
-      <div style="background: #2b4626; color: #dce8d8; text-align: center; padding: 22px 28px">
-        <p style="margin: 0 0 10px; font-size: 12px; opacity: 0.75">
-          Email này được gửi tự động từ hệ thống EcoCau. Vui lòng không trả lời email này.
-        </p>
+      <div
+        style="background-color: #2b4626; color: #d5ead0; padding: 25px 30px; text-align: center"
+      >
+        <div
+          style="
+            background-color: rgba(213, 234, 208, 0.1);
+            height: 1px;
+            width: 60%;
+            margin: 15px auto;
+          "
+        ></div>
         <p style="margin: 0; font-size: 12px; opacity: 0.6">
-          © {{current_year}} EcoCau Store — Đồng hành vì sản phẩm thân thiện với môi trường.
+          © 2025 EcoCau Store. Chuyên cung cấp sản phẩm thân thiện với môi trường.
         </p>
       </div>
     </div>
