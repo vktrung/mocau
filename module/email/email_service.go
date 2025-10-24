@@ -5,7 +5,6 @@ import (
 	"log"
 	"os"
 	"strconv"
-	"time"
 
 	"gopkg.in/gomail.v2"
 )
@@ -64,10 +63,6 @@ func (e *EmailService) SendEmail(data EmailData) error {
 
 func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, orderNumber string, totalAmount float64) error {
 	subject := fmt.Sprintf("Xác nhận đơn hàng #%s", orderNumber)
-	
-	// Get current date
-	now := time.Now()
-	orderDate := now.Format("02/01/2006 15:04")
 	
 	body := fmt.Sprintf(`
 		<!DOCTYPE html>
@@ -147,10 +142,6 @@ func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, o
 									Đang xử lý
 								</p>
 							</div>
-							<div style="background-color: rgba(255, 255, 255, 0.7); padding: 15px; border-radius: 10px;">
-								<p style="margin: 0 0 5px 0; font-size: 14px; color: #8a7052; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Ngày đặt</p>
-								<p style="margin: 0; font-size: 16px; color: #2b4626; font-weight: 600;">%s</p>
-							</div>
 						</div>
 					</div>
 
@@ -211,9 +202,6 @@ func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, o
 
 				<!-- Footer -->
 				<div style="background-color: #2b4626; color: #d5ead0; padding: 25px 30px; text-align: center;">
-					<p style="margin: 0 0 10px 0; font-size: 13px; opacity: 0.8;">
-						Email này được gửi tự động từ hệ thống EcoCau. Vui lòng không trả lời email này.
-					</p>
 					<div style="background-color: rgba(213, 234, 208, 0.1); height: 1px; width: 60%%; margin: 15px auto;"></div>
 					<p style="margin: 0; font-size: 12px; opacity: 0.6;">
 						© 2025 EcoCau Store. Chuyên cung cấp sản phẩm thân thiện với môi trường.
@@ -222,7 +210,7 @@ func (e *EmailService) SendOrderConfirmationEmail(customerEmail, customerName, o
 			</div>
 		</body>
 		</html>
-	`, customerName, orderNumber, formatCurrency(totalAmount), orderDate)
+	`, customerName, orderNumber, formatCurrency(totalAmount))
 
 	return e.SendEmail(EmailData{
 		To:      customerEmail,
